@@ -1,0 +1,38 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{class} \PYGdefault{n+nc}{controller}\PYGdefault{p}{:}
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}\PYGdefaultZus{}init\PYGdefaultZus{}\PYGdefaultZus{}}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{integrator0}\PYGdefault{o}{=}\PYGdefault{l+m+mf}{0.0}\PYGdefault{p}{):}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} \PYGdefaultZhy{}\PYGdefaultZhy{} memory variables for integrator (PID and LQR) \PYGdefaultZhy{}\PYGdefaultZhy{}}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefault{o}{=} \PYGdefault{n}{integrator0}  \PYGdefault{c+c1}{\PYGdefaultZsh{} initial condition for integrator}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{error\PYGdefaultZus{}d1} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.0}  \PYGdefault{c+c1}{\PYGdefaultZsh{} delay of input to integrator}
+
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} \PYGdefaultZhy{}\PYGdefaultZhy{} memory variables for dirty derivative \PYGdefaultZhy{}\PYGdefaultZhy{}}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{y\PYGdefaultZus{}d1} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.0}  \PYGdefault{c+c1}{\PYGdefaultZsh{} delay of y for differentiator}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{ydot} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.0}  \PYGdefault{c+c1}{\PYGdefaultZsh{} output of differentiator}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} gains for dirty derivative}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{diff\PYGdefaultZus{}gain1} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{l+m+mf}{2.0}\PYGdefault{o}{*}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{sigma}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Ts}\PYGdefault{p}{)}\PYGdefault{o}{/}\PYGdefault{p}{(}\PYGdefault{l+m+mf}{2.0}\PYGdefault{o}{*}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{sigma}\PYGdefault{o}{+}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Ts}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{diff\PYGdefaultZus{}gain2} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{2.0}\PYGdefault{o}{/}\PYGdefault{p}{(}\PYGdefault{l+m+mf}{2.0}\PYGdefault{o}{*}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{sigma}\PYGdefault{o}{+}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Ts}\PYGdefault{p}{)}
+
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} \PYGdefaultZhy{}\PYGdefaultZhy{} states for adaptive controller \PYGdefaultZhy{}\PYGdefaultZhy{}}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{xref} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{matrix}\PYGdefault{p}{(}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{zeros}\PYGdefault{p}{((}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Gam}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{],}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{)))}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{thetahat} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{matrix}\PYGdefault{p}{(}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{zeros}\PYGdefault{p}{((}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Gam}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{],}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{)))}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{PID}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{r}\PYGdefault{p}{):}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} read in states}
+        \PYGdefault{n}{y} \PYGdefault{o}{=} \PYGdefault{n}{x}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}  \PYGdefault{c+c1}{\PYGdefaultZsh{} position}
+        \PYGdefault{n}{v} \PYGdefault{o}{=} \PYGdefault{n}{x}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]}  \PYGdefault{c+c1}{\PYGdefaultZsh{} velocity}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} compute the error}
+        \PYGdefault{n}{error} \PYGdefault{o}{=} \PYGdefault{n}{y}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{n}{r}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} integrate the error}
+        \PYGdefault{k}{if} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{abs}\PYGdefault{p}{(}\PYGdefault{n}{v}\PYGdefault{p}{)} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{l+m+mf}{0.5}\PYGdefault{p}{:}  \PYGdefault{c+c1}{\PYGdefaultZsh{} crude anti\PYGdefaultZhy{}windup}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefaultZbs{}
+                                \PYGdefault{o}{+} \PYGdefault{p}{(}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Ts}\PYGdefault{o}{/}\PYGdefault{l+m+mf}{2.0}\PYGdefault{p}{)}\PYGdefault{o}{*}\PYGdefault{p}{(}\PYGdefault{n}{error}\PYGdefault{o}{+}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{error\PYGdefaultZus{}d1}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{error\PYGdefaultZus{}d1} \PYGdefault{o}{=} \PYGdefault{n}{error}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{} PID controller before saturation}
+        \PYGdefault{n}{u\PYGdefaultZus{}unsat} \PYGdefault{o}{=} \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{pid\PYGdefaultZus{}kp}\PYGdefault{o}{*}\PYGdefault{n}{error} \PYGdefaultZbs{}
+                  \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{pid\PYGdefaultZus{}ki}\PYGdefault{o}{*}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefaultZbs{}
+                  \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{pid\PYGdefaultZus{}kd}\PYGdefault{o}{*}\PYGdefault{n}{v}
+        \PYGdefault{n}{u} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{sat}\PYGdefault{p}{(}\PYGdefault{n}{u\PYGdefaultZus{}unsat}\PYGdefault{p}{,} \PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Tmax}\PYGdefault{p}{)}
+        \PYGdefault{k}{if} \PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{pid\PYGdefaultZus{}ki} \PYGdefault{o}{!=} \PYGdefault{l+m+mf}{0.0}\PYGdefault{p}{:}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{integrator} \PYGdefault{o}{+} \PYGdefault{p}{(}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{Ts}\PYGdefault{o}{/}\PYGdefault{n}{P}\PYGdefault{o}{.}\PYGdefault{n}{pid\PYGdefaultZus{}ki}\PYGdefault{p}{)}\PYGdefault{o}{*}\PYGdefault{p}{(}\PYGdefault{n}{u}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{n}{u\PYGdefaultZus{}unsat}\PYGdefault{p}{)}
+        \PYGdefault{k}{return} \PYGdefault{n}{u}
+\end{Verbatim}

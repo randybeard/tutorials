@@ -1,0 +1,36 @@
+class controller:
+    def __init__(self, integrator0=0.0):
+        # -- memory variables for integrator (PID and LQR) --
+        self.integrator = integrator0  # initial condition for integrator
+        self.error_d1 = 0.0  # delay of input to integrator
+
+        # -- memory variables for dirty derivative --
+        self.y_d1 = 0.0  # delay of y for differentiator
+        self.ydot = 0.0  # output of differentiator
+        # gains for dirty derivative
+        self.diff_gain1 = (2.0*P.sigma-P.Ts)/(2.0*P.sigma+P.Ts)
+        self.diff_gain2 = 2.0/(2.0*P.sigma+P.Ts)
+
+        # -- states for adaptive controller --
+        self.xref = np.matrix(np.zeros((P.Gam.shape[0],1)))
+        self.thetahat = np.matrix(np.zeros((P.Gam.shape[0],1)))
+
+    def PID(self, x, r):
+        # read in states
+        y = x[0]  # position
+        v = x[1]  # velocity
+        # compute the error
+        error = y-r
+        # integrate the error
+        if np.abs(v) < 0.5:  # crude anti-windup
+            self.integrator = self.integrator \
+                                + (P.Ts/2.0)*(error+self.error_d1)
+        self.error_d1 = error
+        # PID controller before saturation
+        u_unsat = - P.pid_kp*error \
+                  - P.pid_ki*self.integrator \
+                  - P.pid_kd*v
+        u = self.sat(u_unsat, P.Tmax)
+        if P.pid_ki != 0.0:
+            self.integrator = self.integrator + (P.Ts/P.pid_ki)*(u-u_unsat)
+        return u

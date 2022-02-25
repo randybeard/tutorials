@@ -8,14 +8,15 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 order = 3  # order of spline polynomials
-knots = [0, 0, 0, 1, 2, 3, 3, 3]  # knot points
-ctrlpts = np.array([  # 3D control points
+knots = [0, 0, 0, 0, 1, 2, 3, 3, 3, 3]  # n+order+1 knot points
+ctrlpts = np.array([  # n-3D control points
     [0., 0., 0.],
     [1., 0., 0.],
-    [1., 1., 0.],
+    [0, 1, 0.],
+    [1., 1., 0],
     [1., 1., 1.],
+    [1., 1., 2.],
     ])
-#c = [-1, 2, 0, -1]  # control points (1D for now)
 spl = BSpline(knots, ctrlpts, order)  # create spline
 t = np.linspace(0, 3, 100)
 spline_fine = spl(t)
