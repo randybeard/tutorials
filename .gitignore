@@ -131,3 +131,11 @@ dmypy.json
 # macos files & directories
 .DS_Store
 __MACOSX/
+
+# latex
+*.aux
+*.blg
+*.bbl
+*.synctex.gz
+*.log
+*.pdf
