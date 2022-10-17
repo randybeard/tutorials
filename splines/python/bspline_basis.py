@@ -27,7 +27,7 @@ def plotSplineBasis(order):
                 ctrl[i] = 1
                 pts = splineBasis(order, knots, ctrl, t)
                 ax[i].plot(t, pts)
-                ax[i].set(ylabel=f"n={i+1}")
+                ax[i].set(ylabel=f"n={i}")
  
 plotSplineBasis(8)
 plt.show()
