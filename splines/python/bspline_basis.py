@@ -1,6 +1,7 @@
 """
 messing with b-splines
         2/18/21 - RWB
+        10/19/22 - RWB
 """
 import numpy as np
 from scipy.interpolate import BSpline
@@ -15,7 +16,8 @@ def splineBasis(order, knots, controlPoints, time):
 def plotSplineBasis(order):
         fig = plt.figure(order)
         if order > 0:
-                N = order + 1
+                #N = order + 1
+                N = order + 1 + 1
         else:
                 N = 2
         t = np.linspace(0, N, 100)
@@ -27,9 +29,9 @@ def plotSplineBasis(order):
                 ctrl[i] = 1
                 pts = splineBasis(order, knots, ctrl, t)
                 ax[i].plot(t, pts)
-                ax[i].set(ylabel=f"n={i}")
+                ax[i].set(ylabel=f"m={i}")
  
-plotSplineBasis(8)
+plotSplineBasis(1)
 plt.show()
 
 

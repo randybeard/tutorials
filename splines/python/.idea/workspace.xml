@@ -40,8 +40,9 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.bspline_surface">
+  <component name="RunManager" selected="Python.bspline_basis">
     <configuration name="bspline_basis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,10 +129,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.bspline_basis" />
         <item itemvalue="Python.bspline_surface" />
         <item itemvalue="Python.bspline_tools" />
         <item itemvalue="Python.third_order_trajectory" />
-        <item itemvalue="Python.bspline_basis" />
       </list>
     </recent_temporary>
   </component>
@@ -145,6 +146,28 @@
       <updated>1649877454932</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1419" height="263" key="GridCell.Tab.0.bottom" timestamp="1666221216064">
+      <screen x="0" y="25" width="2048" height="1127" />
+    </state>
+    <state width="1419" height="263" key="GridCell.Tab.0.bottom/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216064" />
+    <state width="1419" height="263" key="GridCell.Tab.0.center" timestamp="1666221216063">
+      <screen x="0" y="25" width="2048" height="1127" />
+    </state>
+    <state width="1419" height="263" key="GridCell.Tab.0.center/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216063" />
+    <state width="1419" height="263" key="GridCell.Tab.0.left" timestamp="1666221216062">
+      <screen x="0" y="25" width="2048" height="1127" />
+    </state>
+    <state width="1419" height="263" key="GridCell.Tab.0.left/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216062" />
+    <state width="1419" height="263" key="GridCell.Tab.0.right" timestamp="1666221216063">
+      <screen x="0" y="25" width="2048" height="1127" />
+    </state>
+    <state width="1419" height="263" key="GridCell.Tab.0.right/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216063" />
+    <state x="346" y="285" key="SettingsEditor" timestamp="1666220149593">
+      <screen x="0" y="25" width="2048" height="1127" />
+    </state>
+    <state x="346" y="285" key="SettingsEditor/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666220149593" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

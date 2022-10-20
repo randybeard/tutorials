@@ -92,11 +92,11 @@ These notes provide an overview of B-splines and their applications to robotics.
 %---------------------------------------------------------------
 \section{Motivation}
 
-The objective of these notes is to explore spline methods for robotic applications. In general, the position of a robot in Euclidian space can be described by a time parametrized trajectory $\mathbf{p}(t)\in\mathbb{R}^3$, $t\in[a,b]$.  The time parametrized trajectory can be parameterized using a weighted sum of basic function as
+The objective of these notes is to explore spline methods for robotic applications. In general, the position of a robot in Euclidian space can be described by a time parametrized trajectory $\mathbf{p}(t)\in\mathbb{R}^3$, $t\in[a,b]$.  The time parametrized trajectory can be parameterized using a weighted sum of basis function as
 \[
-\mathbf{p}(t) = \sum_{j=0}^{n-1} \cbf_j \phi_j(t),
+\mathbf{p}(t) = \sum_{j=0}^{n} \cbf_j \phi_j(t),
 \]
-where $\cbf_j\in\mathbb{R}^3$, and $\phi_j(t)$ are a set of basis functions.  For example, the basis functions could be the set of polynomial power function $\phi_j(t) = t^j/j!$, or the set of sinusoidal function $\phi_j(t) = \sin(\frac{2\pi j}{n}t)$.  The disadvantage of both the polynomial power functions and sinusoidal functions is that the basis functions are defined for all $t\in[a,b]$ and so each control points $\mathbb{c}_j$ influences the entire trajectory.  Another disadvantage is that a large number of basis functions may be required to represent complicated trajectories.  
+where $\cbf_j\in\mathbb{R}^3$, and $\phi_j(t)$ are a set of basis functions.  For example, the basis functions could be the set of polynomial power function $\phi_j(t) = t^j/j!$, or the set of sinusoidal function $\phi_j(t) = \sin(\frac{2\pi j}{n}t)$.  The disadvantage of both the polynomial power functions and sinusoidal functions is that the basis functions are defined for all $t\in[a,b]$ and so each control points $\mathbf{c}_j$ influences the entire trajectory.  Another disadvantage is that a large number of basis functions may be required to represent complicated trajectories.  
 
 In these notes, we will use B-spline basis functions which have a number of very nice properties that we will explore.  In particular, a {\em B-spline} trajectory has the following form
 \[
@@ -118,14 +118,15 @@ b_j^0(t; \mathbf{t}) &= \begin{cases} 1 & \text{~if~} \tau_j \leq t \leq \tau_{j
  					   \end{cases} 
 	\label{eq:spline_basis_definition_0}\\	
 b_j^k(t; \mathbf{t}) &= \frac{t-\tau_j}{\tau_{j+k}-
-\tau_j} b_j^{k-1}(t; \mathbf{t}) + \frac{\tau_{j+k+1}-t}{\tau_{j+k+1}-\tau_{j+1}} b_{j+1}^{k-1}(t; \mathbf{t}).
+\tau_j} b_j^{k-1}(t; \mathbf{t}) + \frac{\tau_{j+k+1}-t}{\tau_{j+k+1}-\tau_{j+1}} b_{j+1}^{k-1}(t; \mathbf{t}),
 	\label{eq:spline_basis_definition_k}
 \end{align}
+where a divide by zero in Equation~\eqref{eq:spline_basis_definition_k} is interpreted to mean that the associated term is zero.
 
 %+++++++++++++++++++++++++++++++
 \subsection{Zeroth order basis}
 
-If the knot vector is given by
+For example, if the knot vector is given by
 \[
 \mathbf{t} = [\tau_0, \tau_1, \tau_2] \defeq [0, 1, 2],
 \]
@@ -157,7 +158,7 @@ If the knot vector is given by
 \[
 \mathbf{t} = [\tau_0, \tau_1, \tau_2, \tau_3, \tau_4] \defeq [0, 0, 1, 2, 2],
 \]
-then there are two basis function of order $k=1$ given by
+then there are $2k+1=3$ unique basis function of order $k=1$ given by
 \begin{align*}
 b_0^1(t; \mathbf{t}) &= \frac{t-\tau_0}{\tau_1-\tau_0} b_0^0(t;\mathbf{t}) + \frac{\tau_2-t}{\tau_2-\tau_1}b_1^0(t; \mathbf{t}) 
 	= \begin{cases} 0   & \text{~if~} t_0=0 \leq t \leq t_1=0 \\
@@ -175,17 +176,20 @@ b_2^1(t; \mathbf{t}) &= \frac{t-\tau_2}{\tau_3-\tau_2} b_2^0(t;\mathbf{t}) + \fr
  					0 & \text{~if~} t_3=2 \leq t \leq t_4=2 \\
  	  \end{cases}
 \end{align*}
-where $b_0^1(t; \mathbf{t})$, $b_1^1(t; \mathbf{t})$, and $b_2^1(t; \mathbf{t})$ are shown in Figure~\ref{fig:spline_basis_1}.
+where $b_0^1(t; \mathbf{t})$, $b_1^1(t; \mathbf{t})$, and $b_2^1(t; \mathbf{t})$ are shown on the left in Figure~\ref{fig:spline_basis_1}.
 \begin{figure}[hbt]
-  \centering\includegraphics[width=0.7\textwidth]{./figures/spline_basis_1}
+  \centering
+  	\includegraphics[width=0.45\textwidth]{./figures/spline_basis_1}
+  	\includegraphics[width=0.45\textwidth]{./figures/spline_basis_1_extra_knot}
   \caption{First order spline basis}
   \label{fig:spline_basis_1}  
 \end{figure}
-Expanding the knot vector to 
+If the knot vector is expanded by one time unit to
 \[
 \mathbf{t}' = [\tau_0, \tau_1, \tau_2, \tau_3, \tau_4, \tau_5] \defeq [0, 0, 1, 2, 3, 3],
 \]
-results in $b_2^1(t; \mathbf{t}')$ looking like $b_1^1(t; \mathbf{t})$ shifted to the right by one, and $b_3^1(t; \mathbf{t}')$ looking like $b_2^1(t; \mathbf{t})$ shifted to the right by one.
+then there are still only three unique basis vectors, but 
+$b_2^1(t; \mathbf{t}')$ is a shifted version $b_1^1(t; \mathbf{t})$ and $b_3^1(t; \mathbf{t}')$ is a shifted version $b_2^1(t; \mathbf{t})$, as shown on the right in Figure~\ref{fig:spline_basis_1}.
 
 \clearpage
 
@@ -197,7 +201,7 @@ If the knot vector is given by
 \[
 \mathbf{t} = [\tau_0, \tau_1, \tau_2, \tau_3, \tau_4, \tau_5, \tau_6, \tau_7, \tau_8] \defeq [0, 0, 0, 1, 2, 3, 3, 3],
 \]
-then there are five basis function of order $k=2$ given by
+then there are $2k+1=5$ unique basis function of order $k=2$ given by
 \begin{align*}
 b_0^2(t; \mathbf{t}) &= \frac{t-\tau_0}{\tau_2-\tau_0} b_0^1(t;\mathbf{t}) + \frac{\tau_3-t}{\tau_3-\tau_1}b_1^1(t; \mathbf{t}) 
 	= \begin{cases} (1-t)^2   & \text{~if~} 0 \leq t \leq 1 \\
@@ -228,19 +232,21 @@ b_4^2(t; \mathbf{t}) &= \frac{t-\tau_2}{\tau_4-\tau_2} b_2^1(t;\mathbf{t}) + \fr
  					0 & \text{~otherwise}
  	  \end{cases}.	   	  
 \end{align*}
-The second order basis function are shown in Figure~\ref{fig:spline_basis_2}.
+The the unique second order basis function are shown on the left in Figure~\ref{fig:spline_basis_2}.
 \begin{figure}[hbt]
-  \centering\includegraphics[width=0.99\textwidth]{./figures/spline_basis_2}
+  \centering
+  	\includegraphics[width=0.45\textwidth]{./figures/spline_basis_2}
+  	\includegraphics[width=0.45\textwidth]{./figures/spline_basis_2_extra_knot}
   \caption{Second order spline basis}
   \label{fig:spline_basis_2}  
 \end{figure}
-Expanding the knot vector to 
+Expanding the knot vector by one time unit to 
 \[
 \mathbf{t}' = [\tau_0, \tau_1, \tau_2, \tau_3, \tau_4, \tau_5] \defeq [0, 0, 0, 1, 2, 3, 4, 4, 4],
 \]
-results in $b_3^2(t; \mathbf{t}')$ looking like $b_2^2(t; \mathbf{t})$ shifted to the right by one, and $b_4^2(t; \mathbf{t}')$ and $b_5^2(t; \mathbf{t})$ looking like $b_3^2(t; \mathbf{t}')$ and $b_4^2(t; \mathbf{t})$ in Figure~\ref{fig:spline_basis_2} but shifted to the right by one.
+still results in $2k+1$ unique basis vectors, but $b_3^2(t; \mathbf{t}')$ is a right-shifted version of $b_2^2(t; \mathbf{t})$, and $b_4^2(t; \mathbf{t}')$ and $b_5^2(t; \mathbf{t})$ are a right-shifted versions of $b_3^2(t; \mathbf{t}')$ and $b_4^2(t; \mathbf{t})$, as shown on the right in Figure~\ref{fig:spline_basis_2}.
 
-Similarly, the standard third order and eighth order basis functions are shown in Figures~\ref{fig:spline_basis_3} and~\ref{fig:spline_basis_8} respectively.
+Similarly, the unique third order and eighth order basis functions are shown in Figures~\ref{fig:spline_basis_3} and~\ref{fig:spline_basis_8} respectively.
 
 \begin{figure}[hbt]
   \centering\includegraphics[width=0.99\textwidth]{./figures/spline_basis_3}
@@ -342,7 +348,7 @@ The proof therefore follows by induction.
 %---------------------------------------------------------------
 \section{Clamped Uniform B-Splines}
 
-In the previous section we saw that there is a relationship between the knot point vector $\mathbb{t}$ and the basis functions.  We say that the knot vector $\mathbf{t}$ is {\em clamped and uniform} if it has form
+In the previous section we saw that there is a relationship between the knot point vector $\mathbf{t}$ and the basis functions.  We say that the knot vector $\mathbf{t}$ is {\em clamped and uniform} if it has form
 \[
 \mathbf{t} = [\underbrace{\tau_0, \tau_0, \dots, \tau_0}_{k-\text{terms}}, \tau_0, \tau_0+\Delta, \tau_0+2\Delta, \dots, \tau_0+M\Delta, \underbrace{\tau_0+M\Delta, \dots, \tau_0+M\Delta}_{k-\text{terms}}],
 \]
@@ -363,16 +369,17 @@ and there are $M$ evenly spaced time intervals between $t_0$ and $t_f=t_0+M\Delt
 \begin{equation}\label{eq:knot_vector_t_M}
 	\mathbf{t}^k_M \defeq [\underbrace{0, 0, \dots, 0}_{k-\text{terms}}, 0, 1, 2, \dots, M, \underbrace{M, \dots, M}_{k-\text{terms}}], 
 \end{equation}
-and use Lemmas~\ref{lem:basis_are_shift_invariant} and~\ref{lem:bases_are_scale_invariant} to adapt the results to any desired time interval.
+and use Lemmas~\ref{lem:basis_are_shift_invariant} and~\ref{lem:bases_are_scale_invariant} to adapt the results to any desired time interval by shifting and scaling.
 
 There are several important properties of the B-spline basis functions for uniform clamped knot vectors, which we will lay out in the next several lemmas.
 
 \begin{lemma} \label{lem:nonzero_basis_vectors}
 	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$.
-	Then there are exactly $M+k$ non-zero basis function $b_m^k(t;\mathbf{t}_M^k)$, $m=0, \dots, M+k-1$.
-	The basis of support for $b_m^k(t;\mathbf{t}_M^k)$, i.e., the time interval where $b_m^k(t;\mathbf{t}_M^k)$ is non-zero is given 
+	Then there are exactly $M+k$ non-zero basis function of order $k$, namely $b_m^k(t;\mathbf{t}_M^k)$, $m=0, \dots, M+k-1$.
+	Furthermore, the basis of support for $b_m^k(t;\mathbf{t}_M^k)$, i.e., the time interval where $b_m^k(t;\mathbf{t}_M^k)$ is non-zero is given by
 		\[
-				b_m^k(t;\mathbf{t}_M^k) \neq 0 \text{~if~} 
+				b_m^k(t;\mathbf{t}_M^k) \neq 0 
+				\quad \text{~if~} \quad
 				\begin{cases}
 				t \in [0, m+1] & 0\leq m \leq k \\
 				t \in [m-k, m+1] & k+1 \leq m \leq M-1 \\
@@ -399,12 +406,49 @@ A graphical depiction of the region of support for the set of basis functions $\
 \begin{proof}  The proof again follows from a careful, but straight-forward accounting using Equations~\eqref{eq:spline_basis_definition_0} and~\eqref{eq:spline_basis_definition_k}.	
 \end{proof}
 
-
+\begin{definition}
 Let $\{\cbf_0, \cbf_1, \dots, \cbf_{M+k-1}\}$ be a set of control point vectors in $\mathbb{R}^n$, and let $\mathbf{t}_M^k$ be a clamped and uniform knot vector, then the function 
 \begin{equation}\label{eq:clamped_uniform_spline}
 \mathbf{p}(t) = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k), \qquad t\in[0, M]
 \end{equation}
 is said to be a $k^{th}$ order clamped and uniform B-spline. 
+\end{definition}
+
+One of the most important properties of B-splines is the so-called finite-support property, which states that at any instant of time, only a few control points influence the B-spline.  This property is formalized in the following lemma.
+\begin{lemma}\label{lem:finite_num_control_points}
+	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$. If $0\leq j < M$ is an integer, then for any instant of time $t\in[j, j+1]\subset [0, M]$ we have that
+	\[
+	\mathbf{p}(t) = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k) = \sum_{m=j}^{j+k} \cbf_m b_m^k(t; \mathbf{t}_M^k).
+	\]
+	In other words, over the interval $t\in[j, j+1]$ there are only $k+1$ control points that influence $\mathbf{p}(t)$, namely
+	$\{\cbf_j, \dots, \cbf_{j+k}\}$.
+\end{lemma}
+\begin{proof}
+The proof follows directly from Lemma~\ref{lem:nonzero_basis_vectors}.	
+\end{proof}
+
+
+
+Another important property of B-splines, is that the spline $\mathbf{p}(t)$ is contained in the convex hull of its supporting control points.  
+\begin{definition}
+We say that the vector $\xbf$ is in the convex hull of the vectors $\{\mathbf{q}_1, \dots, \mathbf{q}_n\}$ if 
+\[
+\xbf = \sum_{j=1}^n \alpha_j \mathbf{q}_j, \qquad \text{where} \qquad \sum_{j=1}^n \alpha_j = 1.
+\]	
+\end{definition}
+
+\begin{lemma}\label{lem:spline_in_convex_hull}
+	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$. If $0\leq j < M$ is an integer, then for any instant of time $t\in[j, j+1]\subset [0, M]$ we have that the clamped uniform B-spline
+	\[
+	\mathbf{p}(t) = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k) = \sum_{m=j}^{j+k} \cbf_m b_m^k(t; \mathbf{t}_M^k)
+	\]
+	is in the convex hull of the control points $\{\cbf_j, \dots, \cbf_{j+k}\}$.
+\end{lemma}
+\begin{proof}
+	The lemma follows from Lemma~\ref{lem:basis_vectors_sum_to_1} and~\ref{lem:finite_num_control_points}.
+\end{proof}
+Lemma~\ref{lem:spline_in_convex_hull} is an important result for path planning since we can guarantee collision-free paths by simply checking that the convex hull of control points is collision free.
+
 
 To simplify notation we will stack the basis function in a vector as
 \begin{equation}\label{eq:basis_vector}
@@ -426,39 +470,6 @@ and the parameterized B-spline is given by
 \mathbf{p}(\sigma) = \Cbf \bbf^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k), \qquad \sigma\in[0, 1].
 \]
 Abusing notation, we will use $\bbf^k(\sigma)$ to mean $\bbf^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k)$, and parameterized paths with always be defined for $\sigma\in[0,1]$
-
-One of the most important properties of B-splines is the so-called finite-support property, which states that at any instant of time, only a few control points influence the B-spline.  This property is formalized in the following lemma.
-\begin{lemma}\label{lem:finite_num_control_points}
-	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$. If $0\leq j < M$ is an integer, then for any instant of time $t\in[j, j+1]\subset [0, M]$ we have that
-	\[
-	\mathbf{p}(t) = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k) = \sum_{m=j}^{j+k} \cbf_m b_m^k(t; \mathbf{t}_M^k).
-	\]
-	In other words, over the interval $t\in[j, j+1]$ there are only $k+1$ control points that influence $\mathbf{p}(t)$, namely
-	$\{\cbf_j, \dots, \cbf_{j+k}\}$.
-\end{lemma}
-\begin{proof}
-The proof follows directly from Lemma~\ref{lem:nonzero_basis_vectors}.	
-\end{proof}
-
-Another important property of B-splines, is that the spline $\mathbf{p}(t)$ is contained in the convex hull of its supporting control points.  
-\begin{definition}
-We say that the vector $\xbf$ is in the convex hull of the vectors $\{\mathbf{q}_1, \dots, \mathbf{q}_n\}$ if 
-\[
-\xbf = \sum_{j=1}^n \alpha_j \mathbf{q}_j, \qquad \text{where} \qquad \sum_{j=1}^n \alpha_j = 1.
-\]	
-\end{definition}
-
-\begin{lemma}\label{lem:spline_in_convex_hull}
-	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$. If $0\leq j < M$ is an integer, then for any instant of time $t\in[j, j+1]\subset [0, M]$ we have that the B-spline
-	\[
-	\mathbf{p}(t) = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k) 
-	\]
-	is in the convex hull of the control points $\{\cbf_j, \dots, \cbf_{j+k}\}$.
-\end{lemma}
-\begin{proof}
-	The lemma follows from Lemma~\ref{lem:basis_vectors_sum_to_1} and~\ref{lem:finite_num_control_points}.
-\end{proof}
-Lemma~\ref{lem:spline_in_convex_hull} is an important result for path planning since we can guarantee collision-free paths by simply checking that the convex hull of control points is collision free.
 
 %---------------------------------------------------------
 \subsection{SciPy BSpline library}
@@ -536,7 +547,7 @@ The resulting spline is shown in Figure~\ref{fig:example_spline_curve}.
 %+++++++++++++++++++++++++++++++
 \section{Derivatives of B-splines}
 
-We begin this section by noting that the basis functions and the knot vector do not have to be of the same order.  In fact, if the knot vector his higher order than the basis functions, then the first several basis function will simply be zero.  
+We begin this section by noting that the basis functions and the knot vector do not have to be of the same order.  In fact, if the knot vector has higher order than the basis functions, then the first several basis function will simply be zero.  
 For example, let $\mathbf{t}_3^2 = [0, 0\vdots, 0, 1, 2, 3, \vdots 3, 3]$, then from Equation~\eqref{eq:spline_basis_definition_0} $b_0^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, $b_5^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, and $b_5^1(t; \mathbf{t}_3^2)$ are equal to zero since the knot intervals in the denominator for those functions are zero.  The remaining basis function are shown in Figure~\ref{fig:shifting_property}.
 \begin{figure}[hbt]
   \centering\includegraphics[width=0.99\textwidth]{./figures/shifting_property}
@@ -663,7 +674,7 @@ From Lemma~\ref{lem:derivative_of_spline} we can derive a number of useful resul
  			        \cbf_{M+k-2}^{'\top}
  				   \end{pmatrix}^\top.
 		\]
-	\item[(iii)] The $\ell^{th}$ derivative of $\mathbf{p}(t)$ for $\ell\leq k-1$ is given by
+	\item[(iii)] The $\ell^{th}$ derivative of $\mathbf{p}(t)$ for $0\leq\ell\leq k-1$ is given by
 		\[
 			\frac{d^{\ell}\mathbf{p}}{dt^{\ell}} = C D_M^k D_M^{k-1} \dots D_M^{k-\ell+1} \bbf_M^{k-\ell}(t; \mathbf{t}_M^{k-\ell}), \quad t\in [0, M].
 		\]
