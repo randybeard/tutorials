@@ -51,7 +51,7 @@
 \newcommand{\defeq}{\circeq}
 \newcommand{\fov}[1]{\text{\em fov}\left(#1\right)}
 \newcommand{\fovinv}[1]{\text{\em fov}^{-1}\left(#1\right)}
-\newcommand{\odd}[1]{\text{\em odd}\left(#1\right)}
+\newcommand{\odd}[1]{\text{\em odds}\left(#1\right)}
 \renewcommand{\vec}[1]{\text{\em vec}\left(#1\right)}
 \newcommand{\bbf}{\mathbf{b}}
 \newcommand{\cbf}{\mathbf{c}}
@@ -462,14 +462,14 @@ allowing Equation~\eqref{eq:clamped_uniform_spline} to be written as
 \[
 \mathbf{p}(t) = \Cbf \bbf_M^k(t; \mathbf{t}_M^k), \qquad t\in[0, M].
 \]
-For simplicity of notation, we will often use $\bbf^k(t)$ to mean $\bbf^k(t; \mathbf{t}_M^k)$.  Given the shift and scale invariance of the B-spline basis functions, $\mathbf{p}(t)$ can be shifted and scaled to represent functions over arbitrary finite time intervals.
+For simplicity of notation, we will use $\bbf_M^k(t)$ to mean $\bbf_M^k(t; \mathbf{t}_M^k)$.  Given the shift and scale invariance of the B-spline basis functions, $\mathbf{p}(t)$ can be shifted and scaled to represent functions over arbitrary finite time intervals.
 
 For parameterized paths $\mathbf{p}(\sigma)$, where the path parameter $\sigma\in[0,1]$ we set the knot vector as $\frac{1}{M}\mathbf{t}_{M}^k$
 and the parameterized B-spline is given by
 \[
-\mathbf{p}(\sigma) = \Cbf \bbf^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k), \qquad \sigma\in[0, 1].
+\mathbf{p}(\sigma) = \Cbf \bbf_M^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k), \qquad \sigma\in[0, 1].
 \]
-Abusing notation, we will use $\bbf^k(\sigma)$ to mean $\bbf^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k)$, and parameterized paths with always be defined for $\sigma\in[0,1]$
+Abusing notation, we will use $\bbf_M^k(\sigma)$ to mean $\bbf_M^k(\sigma; \frac{1}{M}\mathbf{t}_{M}^k)$, and parameterized paths with always be defined for $\sigma\in[0,1]$
 
 %---------------------------------------------------------
 \subsection{SciPy BSpline library}
@@ -547,8 +547,8 @@ The resulting spline is shown in Figure~\ref{fig:example_spline_curve}.
 %+++++++++++++++++++++++++++++++
 \section{Derivatives of B-splines}
 
-We begin this section by noting that the basis functions and the knot vector do not have to be of the same order.  In fact, if the knot vector has higher order than the basis functions, then the first several basis function will simply be zero.  
-For example, let $\mathbf{t}_3^2 = [0, 0\vdots, 0, 1, 2, 3, \vdots 3, 3]$, then from Equation~\eqref{eq:spline_basis_definition_0} $b_0^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, $b_5^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, and $b_5^1(t; \mathbf{t}_3^2)$ are equal to zero since the knot intervals in the denominator for those functions are zero.  The remaining basis function are shown in Figure~\ref{fig:shifting_property}.
+We begin this section by noting that the basis functions and the knot vector do not have to be of the same order.  In fact, if the knot vector has higher order than the basis functions, then the first several basis functions will simply be zero.  
+For example, let $\mathbf{t}_3^2 = [0, 0\vdots, 0, 1, 2, 3, \vdots 3, 3]$, then from Equation~\eqref{eq:spline_basis_definition_0} $b_0^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, $b_5^0(t; \mathbf{t}_3^2)$, $b_1^0(t; \mathbf{t}_3^2)$, and $b_5^1(t; \mathbf{t}_3^2)$ are equal to zero since the knot intervals in the denominator for those functions are zero.  The remaining basis functions are shown in Figure~\ref{fig:shifting_property}.
 \begin{figure}[hbt]
   \centering\includegraphics[width=0.99\textwidth]{./figures/shifting_property}
   \caption{Shifting property of uniform clamped B-spline basis functions.}
@@ -562,7 +562,7 @@ b_m^j(t; \mathbf{t}_M^k) = b_{m-1}^j(t; \mathbf{t}_M^{k-1}), \qquad j \leq k, \q
 \]	
 Using vector notation we have that
 \[
-\underbrace{\bbf_M^{k-1}(t; \mathbf{t}_M^{k-1})}_{(M+k-1)\times 1} = S_{M+k} \underbrace{\bbf_M^{k-1}(t; \mathbf{t}_M^k)}_{(M+k)\times(M+k)},
+\underbrace{\bbf_M^{k-1}(t; \mathbf{t}_M^{k-1})}_{(M+k-1)\times 1} = S_{M+k} \underbrace{\bbf_M^{k-1}(t; \mathbf{t}_M^k)}_{(M+k)\times 1},
 \]
 where
 \[
@@ -585,11 +585,11 @@ Using vector notation, we have the following formula for the derivative a spline
 \begin{lemma} \label{lem:derivative_of_spline}
 Given the $k^{th}$-order uniform clamped spline function
 \[
-\mathbf{p}(t) = \Cbf \bbf_M^k(t; \mathbf{t}_M^k), \quad t\in[0, M]
+\mathbf{p}(t) = \Cbf \bbf_M^k(t), \quad t\in[0, M]
 \]
 we have that
 \[
-\frac{d\mathbf{p}}{dt}(t) = \Cbf D_M^k \bbf_M^{k-1}(t; \mathbf{t}_M^{k-1}), \quad t\in[0, M]
+\frac{d\mathbf{p}}{dt}(t) = \Cbf D_M^k \bbf_M^{k-1}(t), \quad t\in[0, M]
 \]	
 where $D_M^k$ is the $(M+k)\times (M+k-1)$ derivative matrix of order $k$ given by
 \begin{equation}\label{eq:D_k}
@@ -604,7 +604,7 @@ is an $(M+k-1)\times(M+k-1)$ diagonal matrix.
 \begin{proof}
 Noting that
 \[
-\mathbf{p}(t) = \Cbf \bbf_M^k(t; \mathbf{t}_M^k)
+\mathbf{p}(t) = \Cbf \bbf_M^k(t)
               = \sum_{m=0}^{M+k-1} \cbf_m b_m^k(t; \mathbf{t}_M^k),
 \]
 we have that
@@ -613,8 +613,8 @@ we have that
 \]
 From Lemma~\ref{lem:derivative_basis_functions} we get
 \begin{align*}
-\frac{d\mathbf{p}}{dt} &= \sum_{m=0}^{M+k-1} \cbf_m k\left(\frac{b_m^{k-1}(t; \mathbf{t}_M^k)}{\tau_{m+k}-\tau_m} - \frac{b_{m+1}^{k-1}(t; \mathbf{t})}{\tau_{m+k+1}-\tau_{m+1}} \right) \\
-&= \sum_{m=0}^{M+k-1} \cbf_m \left[ \left(\frac{k}{\tau_{m+k}-\tau_m}\right) b_m^{k-1}(t; \mathbf{t}_M^k) - \left(\frac{k}{\tau_{m+k+1}-\tau_{m+1}}\right)  b_{m+1}^{k-1}(t; \mathbf{t}) \right] \\
+\frac{d\mathbf{p}}{dt} &= \sum_{m=0}^{M+k-1} \cbf_m k\left(\frac{b_m^{k-1}(t; \mathbf{t}_M^k)}{\tau_{m+k}-\tau_m} - \frac{b_{m+1}^{k-1}(t; \mathbf{t}_M^k)}{\tau_{m+k+1}-\tau_{m+1}} \right) \\
+&= \sum_{m=0}^{M+k-1} \cbf_m \left[ \left(\frac{k}{\tau_{m+k}-\tau_m}\right) b_m^{k-1}(t; \mathbf{t}_M^k) - \left(\frac{k}{\tau_{m+k+1}-\tau_{m+1}}\right)  b_{m+1}^{k-1}(t; \mathbf{t}_M^k) \right] \\
 &= \left(\frac{k}{\tau_{k}-\tau_0}\right)\cbf_0 b_0^{k-1}(t; \mathbf{t}_M^k) + \sum_{m=1}^{M+k-1} \left(\frac{k}{\tau_{m+k}-\tau_m}\right) \left(  \cbf_m - \cbf_{m-1}  \right) b_m^{k-1}(t; \mathbf{t}_M^k) \\
 &\qquad - \left(\frac{k}{\tau_{M+2k}-\tau_{M+k}}\right)\cbf_{M+k-1}b_{M+k}^{k-1}(t; \mathbf{t}_M^k).
 \end{align*}
@@ -642,7 +642,7 @@ From the definition of $\mathbf{t}_M^{k-1}$ we note that
 Define the $(M+k-1)\times(M+k-1)$ diagonal matrix $\bar{D}_M^k$ in Equation~\eqref{eq:D_k_bar}, and the $(M+k)\times (M+k-1)$ derivative matrix $D_M^k$ in Equation~\eqref{eq:D_k},
 then Equation~\eqref{eq:spline_deriviative_1} can be written as
 \[
-\frac{d\mathbf{p}}{dt} = \Cbf D_M^k \bbf^{k-1}(t; \mathbf{t}_M^{k-1}).
+\frac{d\mathbf{p}}{dt} = \Cbf D_M^k \bbf_M^{k-1}(t).
 \]
 \end{proof}
 
@@ -650,7 +650,7 @@ From Lemma~\ref{lem:derivative_of_spline} we can derive a number of useful resul
 \begin{corollary}
 	Given the $k^{th}$-order uniform clamped B-spline function
 	\[
-	\mathbf{p}(t) = \Cbf \bbf_M^k(t; \mathbf{t}_M^k), \quad t\in[0, M]
+	\mathbf{p}(t) = \Cbf \bbf_M^k(t), \quad t\in[0, M]
 	\]
 	we can make the following statements:
 	\begin{description}
@@ -675,18 +675,29 @@ From Lemma~\ref{lem:derivative_of_spline} we can derive a number of useful resul
  				   \end{pmatrix}^\top.
 		\]
 	\item[(iii)] The $\ell^{th}$ derivative of $\mathbf{p}(t)$ for $0\leq\ell\leq k-1$ is given by
+		\begin{align*}
+			\frac{d^{\ell}\mathbf{p}}{dt^{\ell}} 
+			&= C D_M^k D_M^{k-1} \dots D_M^{k-\ell+1} \bbf_M^{k-\ell}(t), \quad t\in [0, M] \\
+			&= C^{(\ell)} \bbf_M^{k-\ell}(t), \quad t\in [0, M] \\
+			&= C \boldsymbol{\psi}^{(\ell)}(t), \quad t\in [0, M] \\
+		\end{align*}
+		where the control points of the $(k-\ell)^{th}$ order spline are given by
 		\[
-			\frac{d^{\ell}\mathbf{p}}{dt^{\ell}} = C D_M^k D_M^{k-1} \dots D_M^{k-\ell+1} \bbf_M^{k-\ell}(t; \mathbf{t}_M^{k-\ell}), \quad t\in [0, M].
+			C^{(\ell)} = C D_M^k D_M^{k-1} \dots D_M^{k-\ell+1}
 		\]
-	\item[(iii)] The derivative of $\mathbf{p}(t)$ at $t=0$ is given by the difference of the first two control points as
+		or alternatively, the $\ell^{th}$ derivative of the basis vector $\bbf_M^k(t)$ is given by
+		\[
+			\boldsymbol{\psi}^{(\ell)} \defeq \frac{d^{\ell}\bbf_M^k(t)}{dt^{\ell}} = D_M^k D_M^{k-1} \dots D_M^{k-\ell+1} \bbf_M^{k-\ell}(t), \quad t\in [0, M].
+		\]
+	\item[(iv)] The derivative of $\mathbf{p}(t)$ at $t=0$ is given by the difference of the first two control points as
 		\[
 			\frac{d\mathbf{p}}{dt}(0) = k(\cbf_1 - \cbf_0).
 		\]
-	\item[(iv)] The derivative of $\mathbf{p}(t)$ at $t=M$ is given by the difference of the last two control points as
+	\item[(v)] The derivative of $\mathbf{p}(t)$ at $t=M$ is given by the difference of the last two control points as
 		\[
 			\frac{d\mathbf{p}}{dt}(M) = k(\cbf_{M+k-1} - \cbf_{M+k-2}).
 		\]
-	\item[(v)] If the desired B-spline trajectory has the following desired endpoint conditions:
+	\item[(vi)] If the desired B-spline trajectory with $k\geq 3$ has the following desired endpoint conditions:
 		\begin{align*}
 			\text{Initial position:} &\quad \mathbf{p}(0) \stackrel{des}{=} \mathbf{p}_0 \\	
 			\text{Final position:} &\quad \mathbf{p}(M) \stackrel{des}{=} \mathbf{p}_f \\
@@ -811,14 +822,10 @@ If $\mathbf{t}_M^k$ and $\mathbf{t}_N^k$ are two different $k^{th}$ order unifor
 S(x, y) \defeq \sum_{m=0}^{M+k-1} \sum_{n=0}^{N+k-1} c_{m,n} b^k_m(x; \mathbf{t}_M^k) b^k_n(y; \mathbf{t}_N^k), \quad x\in[0,M], y\in[0, N],
 \end{equation}
 where $c_{m, n}$, $m=0, \dots, M+k-1$, $n=0, \dots, N+k-1$ are the control points of the surface.  Defining the matrix $\Cbf=\{c_{m,n}\}$, and defining the spatial variable $\sbf = (s_1, s_2)^\top$, we can write Equation~\eqref{eq:spline_surface1} as
-\[
-S(\sbf) = \bbf^k_M(s_1; \mathbf{t}^k_M)^\top \Cbf \bbf^k_N(s_2; \mathbf{t}^k_M), \quad s_1\in[0,M], s_2\in[0, N],
-\]
-or more compactly as 
 \begin{equation}\label{eq:spline_surface2}
 S(\sbf) = \bbf^k_M(s_1)^\top \Cbf \bbf^k_N(s_2), \quad \sbf\in[0, M]\times[0, N],
 \end{equation}
-This equation is linear in the spline coefficients $\Cbf$.  In other words, if $S_1(\sbf=\bbf^k_M(s_1)^\top \Cbf_1 \bbf^k_N(s_2)$, and $S_1(\sbf=\bbf^k_M(s_1)^\top \Cbf_2 \bbf^k_N(s_2)$ are two different spline surfaces, then 
+This equation is linear in the spline coefficients $\Cbf$.  In other words, if $S_1(\sbf)=\bbf^k_M(s_1)^\top \Cbf_1 \bbf^k_N(s_2)$, and $S_1(\sbf)=\bbf^k_M(s_1)^\top \Cbf_2 \bbf^k_N(s_2)$ are two different spline surfaces, then 
 \[
 S(\sbf)\defeq \alpha S_1(\sbf) + \beta S_2(\sbf) = \bbf^k_M(s_1)^\top \left(\alpha\Cbf_1 + \beta\Cbf_2\right) \bbf^k_N(s_2),
 \]
@@ -928,9 +935,9 @@ The result of running this code is shown in Figure~\ref{fig:random_spline_surfac
 %---------------------------------------------------------------
 \section{B-Splines and Occupancy Maps}
 
-Since B-spline surfaces are continuous the spatial variable $\sbf\in\mathbf{R}^2$, the occupancy map will also be continuous (as opposed to an occupancy grid).  Following~\cite{RodriguesTsiogkasAguiar20}, at every point $\sbf$ we can define the discrete random variable $m(\sbf)$ to be the occupancy of the map, where $m(\sbf)=1$ indicates that at target is located at $\sbf$, and $m(\sbf)=0$ indicates that a target is not located at $\sbf$.  
+Since B-spline surfaces are continuous the spatial variable $\sbf\in\mathbf{R}^2$, the occupancy map will also be continuous (as opposed to an occupancy grid).  Following~\cite{RodriguesTsiogkasAguiar20}, at every point $\sbf$ we can define the discrete random variable $m(\sbf)$ to be the occupancy of the map, where $m(\sbf)=1$ indicates that a target is located at $\sbf$, and $m(\sbf)=0$ indicates that a target is not located at $\sbf$.  
 %
-Similarly, define the discrete random variable $z(\sbf)$ to be the measurement state, where $z(\sbf)=1$ indicates that at target is detected at $\sbf$, and $z(\sbf)=0$ indicates that a target is not measured at $\sbf$.
+Similarly, define the discrete random variable $z(\sbf)$ to be the measurement state, where $z(\sbf)=1$ indicates that a target is detected at $\sbf$, and $z(\sbf)=0$ indicates that a target is not detected at $\sbf$.
 % 
 Let $\xbf_t$ be the state of the UAV at time $t$, where the UAV state evolution equations are given by
 \[
@@ -946,12 +953,12 @@ where $\eta_t\sim\mathcal{N}(0, Q)$. Let $\fov{\xbf_t}$ be the area on the terra
 	\label{eq:prob_z=1:m=1}\\
 	p(z(\sbf)=0 \mid m(\sbf)=1, \xbf) &= \begin{cases}
  											1-p_d &\quad \mathbf{s}\in\fov{\xbf} \\
- 											0 &\quad \text{otherwise}
+ 											1 &\quad \text{otherwise}
  										 \end{cases}
 	\label{eq:prob_z=0:m=1}\\
 	p(z(\sbf)=1 \mid m(\sbf)=0, \xbf) &= \begin{cases}
  											p_f &\quad \mathbf{s}\in\fov{\xbf} \\
- 											0 &\quad \text{otherwise}
+ 											1 &\quad \text{otherwise}
  										  \end{cases}
 	\label{eq:prob_z=1:m=0}\\
 	p(z(\sbf)=0 \mid m(\sbf)=0, \xbf) &= \begin{cases}
@@ -988,7 +995,7 @@ Taking the natural logarithm of each side gives
 \]
 Defining the expected value (over random variable $\xbf_t$) as
 \[
-S_t(\xbf) \defeq E\{\log\odd{m(\sbf)\mid Z_t(\sbf), \xbf_t}\},
+S_t(\sbf) \defeq E\{\log\odd{m(\sbf)\mid Z_t(\sbf), \xbf_t}\},
 \]
 then the expected log-odds surface at time $t$ is given by
 \[
@@ -1093,7 +1100,7 @@ If $\sbf \in [m, m+1]\times[n, n+1] \subset [0, M]\times[0,N]$, then the only no
 The proof follows directly from Lemma~\ref{lem:finite_num_control_points}.	
 \end{proof}
 
-Lemma's~\ref{lem:measurement_update_equation} and~\ref{lem:B_is_sparse} taken together are imply that every measurement $U(z_t(\sbf), \sbf)$ only requires the update of $(k+1)^2$ spline coefficients, and is therefore, extremely computationally efficient.  For example, if the order of the splines is $k=3$, then the measurement update is over a $4\times 4$ submatrix, independent of the size of $M$ and $N$, which for large worlds could be in tens of thousands.  This property has obvious implications for cooperative control where vehicles can build cooperative maps with limited communication.  
+Lemma's~\ref{lem:measurement_update_equation} and~\ref{lem:B_is_sparse} taken together imply that every measurement $U(z_t(\sbf), \sbf)$ only requires the update of $(k+1)^2$ spline coefficients, and is therefore, extremely computationally efficient.  For example, if the order of the splines is $k=3$, then the measurement update is over a $4\times 4$ submatrix, independent of the size of $M$ and $N$, which for large worlds could be in tens of thousands.  This property has obvious implications for cooperative control where vehicles can build cooperative maps with limited communication.  
 
 
 We now turn our attention to the computation of the update equation $U(z_t(\sbf), \sbf)$ given by Equation~\eqref{eq:measurement_function} as
@@ -1111,7 +1118,7 @@ From Equations~\eqref{eq:prob_z=1:m=1}--\eqref{eq:prob_z=1:m=0} we get that
 	= \begin{cases}
  		\log\left(\frac{p_d}{p_f}\right), &\quad z_t(\sbf)=1 \text{~and~} \sbf\in\fov{\xbf_t} \\
  		\log\left(\frac{1-p_d}{1-p_f}\right), &\quad z_t(\sbf)=0 \text{~and~} \sbf\in\fov{\xbf_t} \\
- 		0 &\quad \sbf\not\in\fov{\xbf_t}
+ 		? &\quad \sbf\not\in\fov{\xbf_t}
  	  \end{cases}.
 \]
 Defining the set $\fovinv{\sbf}\defeq\{\xibf\in\mathbb{R}^n: \sbf\in\fov{\xibf}\}$ and defining 
@@ -1167,7 +1174,7 @@ Given a camera measurement, we will need to update the log-odds spline map for e
 \end{align*}
 for $(i,m)=-N_x, \dots, N_x$ and $(j,n)=-N_y, \dots, N_y$.
 
-Defining the project matrix $\Pibf = (\Ibf_2, \mathbf{0})$, the projection of $\xbf_t$ onto the north-east plane is given by $\Pibf\xbf_t$, and the associated error covariance, restricted to the error in the north-east coordinates is given by $\Pibf \Pbf_t \Pibf^\top$
+Defining the projection matrix $\Pibf = (\Ibf_2, \mathbf{0})$, the projection of $\xbf_t$ onto the north-east plane is given by $\Pibf\xbf_t$, and the associated error covariance, restricted to the error in the north-east coordinates is given by $\Pibf \Pbf_t \Pibf^\top$
 
  The probability distribution over the projection of $\xbf$ onto the north-east plane is therefore given by
 \[
@@ -1183,9 +1190,9 @@ Observing Figure~\ref{fig:riemann_sum} we note that computing $\bar{U}$ for all 
 	Define the $(2N_x+1)\times(2N_y+1)$ matrix
 	\[
 	\bar{U}_S \defeq \begin{pmatrix}
-						 \bar{U}(s_{-N_x,-N_y}) \dots \bar{U}(s_{-N_x,N_y}) \\
+						 \bar{U}(s_{-N_x,-N_y}) & \dots & \bar{U}(s_{-N_x,N_y}) \\
 						 \vdots & & \vdots \\
-						 \bar{U}(s_{-N_x,N_y}) \dots \bar{U}(s_{N_x,N_y})
+						 \bar{U}(s_{-N_x,N_y}) & \dots & \bar{U}(s_{N_x,N_y})
                       \end{pmatrix},
 	\]
 	and the $(4N_x+1)\times(4N_y+1)$ matrix
