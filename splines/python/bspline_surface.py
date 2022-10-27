@@ -118,4 +118,4 @@ def draw_surface_basis(order=2):
 if __name__ == "__main__":
     #draw_basis(order=3, M=4)
     #draw_random_surface(order=2, M=10, N=10)
-    draw_surface_basis(order=2)
+    draw_surface_basis(order=0)

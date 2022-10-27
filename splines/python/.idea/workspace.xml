@@ -7,14 +7,9 @@
     <list default="true" id="b14f2e96-d4b0-4143-b964-5a7802916ac5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../bspline.tex" beforeDir="false" afterPath="$PROJECT_DIR$/../bspline.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../figures/spline_basis_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/../figures/spline_basis_0.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../figures/spline_basis_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../figures/spline_basis_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../figures/spline_basis_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../figures/spline_basis_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../figures/spline_basis_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/../figures/spline_basis_3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../figures/spline_basis_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../figures/spline_basis_8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bspline_basis.py" beforeDir="false" afterPath="$PROJECT_DIR$/bspline_basis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bspline_surface.py" beforeDir="false" afterPath="$PROJECT_DIR$/bspline_surface.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,9 +45,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="/usr/local/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bspline_basis.py" />
@@ -147,29 +142,16 @@
     </task>
     <servers />
   </component>
-  <component name="WindowStateProjectService">
-    <state width="1419" height="263" key="GridCell.Tab.0.bottom" timestamp="1666221216064">
-      <screen x="0" y="25" width="2048" height="1127" />
-    </state>
-    <state width="1419" height="263" key="GridCell.Tab.0.bottom/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216064" />
-    <state width="1419" height="263" key="GridCell.Tab.0.center" timestamp="1666221216063">
-      <screen x="0" y="25" width="2048" height="1127" />
-    </state>
-    <state width="1419" height="263" key="GridCell.Tab.0.center/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216063" />
-    <state width="1419" height="263" key="GridCell.Tab.0.left" timestamp="1666221216062">
-      <screen x="0" y="25" width="2048" height="1127" />
-    </state>
-    <state width="1419" height="263" key="GridCell.Tab.0.left/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216062" />
-    <state width="1419" height="263" key="GridCell.Tab.0.right" timestamp="1666221216063">
-      <screen x="0" y="25" width="2048" height="1127" />
-    </state>
-    <state width="1419" height="263" key="GridCell.Tab.0.right/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666221216063" />
-    <state x="346" y="285" key="SettingsEditor" timestamp="1666220149593">
-      <screen x="0" y="25" width="2048" height="1127" />
-    </state>
-    <state x="346" y="285" key="SettingsEditor/-1440.944.1440.900/0.25.2048.1127@0.25.2048.1127" timestamp="1666220149593" />
-  </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bspline_basis.py</url>
+          <line>30</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="foo2" />

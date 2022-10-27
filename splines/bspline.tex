@@ -94,34 +94,35 @@ These notes provide an overview of B-splines and their applications to robotics.
 
 The objective of these notes is to explore spline methods for robotic applications. In general, the position of a robot in Euclidian space can be described by a time parametrized trajectory $\mathbf{p}(t)\in\mathbb{R}^3$, $t\in[a,b]$.  The time parametrized trajectory can be parameterized using a weighted sum of basis function as
 \[
-\mathbf{p}(t) = \sum_{j=0}^{n} \cbf_j \phi_j(t),
+\mathbf{p}(t) = \sum_{m=0}^{N} \cbf_m \phi_m(t),
 \]
-where $\cbf_j\in\mathbb{R}^3$, and $\phi_j(t)$ are a set of basis functions.  For example, the basis functions could be the set of polynomial power function $\phi_j(t) = t^j/j!$, or the set of sinusoidal function $\phi_j(t) = \sin(\frac{2\pi j}{n}t)$.  The disadvantage of both the polynomial power functions and sinusoidal functions is that the basis functions are defined for all $t\in[a,b]$ and so each control points $\mathbf{c}_j$ influences the entire trajectory.  Another disadvantage is that a large number of basis functions may be required to represent complicated trajectories.  
+where $\cbf_m\in\mathbb{R}^n$, and $\phi_m(t)$ are a set of basis functions.  For example, the basis functions could be the set of polynomial power function $\phi_m(t) = t^m/m!$, or the set of sinusoidal function $\phi_m(t) = \sin(\frac{2\pi m}{N}t)$.  The disadvantage of both the polynomial power functions and sinusoidal functions is that the basis functions are defined for all $t\in[a,b]$ and so each control points $\mathbf{c}_m$ influences the entire trajectory.  Another disadvantage is that a large number of basis functions may be required to represent complicated trajectories.  
 
 In these notes, we will use B-spline basis functions which have a number of very nice properties that we will explore.  In particular, a {\em B-spline} trajectory has the following form
 \[
-\mathbf{p}(t) = \sum_{j=0}^{n} \cbf_j b_j^k(t;\mathbf{t}),
+\mathbf{p}(t) = \sum_{m=0}^{N} \cbf_m b_m^k(t;\mathbf{t}),
 \]
-where $\cbf_j\in\mathbb{R}^3$ are the control points,  $\mathbf{t}=(\tau_0, \tau_1, \tau_2, \dots, \tau_T)$ are called the knot points where $i<j \implies \tau_i\leq \tau_j$, and $b_j^k(t;\mathbf{t})$ are the B-spline basis functions of order $k$. The spline trajectories will be defined for $t$ in the span of the knot points, i.e., $t\in[\tau_0, \tau_T]$.  
+where $\cbf_m\in\mathbb{R}^n$ are the control points,  $\mathbf{t}=(\tau_0, \tau_1, \tau_2, \dots, \tau_T)$ are called the knot points where $i<j \implies \tau_i\leq \tau_j$, and $b_m^k(t;\mathbf{t})$ are the B-spline basis functions of order $k$. The spline trajectories will be defined for $t$ in the span of the knot points, i.e., $t\in[\tau_0, \tau_T]$.  
 
-Section~\ref{sec:b-spline-basis-functions} defines the B-spline basis function $b_j^k(t; \mathbf{t})$ and describes some of their properties that will be useful for path planning.
+Section~\ref{sec:b-spline-basis-functions} defines the B-spline basis function $b_m^k(t; \mathbf{t})$ and describes some of their properties that will be useful for path planning and for estimation.
+Section~...
 % overview of other sections
 
 %---------------------------------------------------------------
 \section{B-Spline Basis Functions}
 \label{sec:b-spline-basis-functions}
 
-The B-spline basis function are defined by the following recursive formula:
+The B-spline basis function are defined by the recursive formula:
 \begin{align}
-b_j^0(t; \mathbf{t}) &= \begin{cases} 1 & \text{~if~} \tau_j \leq t \leq \tau_{j+1} \\ 
+b_m^0(t; \mathbf{t}) &= \begin{cases} 1 & \text{~if~} \tau_m \leq t \leq \tau_{m+1} \\ 
  									 0 & \text{~otherwise} 
  					   \end{cases} 
 	\label{eq:spline_basis_definition_0}\\	
-b_j^k(t; \mathbf{t}) &= \frac{t-\tau_j}{\tau_{j+k}-
-\tau_j} b_j^{k-1}(t; \mathbf{t}) + \frac{\tau_{j+k+1}-t}{\tau_{j+k+1}-\tau_{j+1}} b_{j+1}^{k-1}(t; \mathbf{t}),
+b_m^k(t; \mathbf{t}) &= \frac{t-\tau_m}{\tau_{m+k}-
+\tau_m} b_m^{k-1}(t; \mathbf{t}) + \frac{\tau_{m+k+1}-t}{\tau_{m+k+1}-\tau_{m+1}} b_{m+1}^{k-1}(t; \mathbf{t}),
 	\label{eq:spline_basis_definition_k}
 \end{align}
-where a divide by zero in Equation~\eqref{eq:spline_basis_definition_k} is interpreted to mean that the associated term is zero.
+where by convention, a divide by zero in Equation~\eqref{eq:spline_basis_definition_k} is interpreted to mean that the associated term is zero.
 
 %+++++++++++++++++++++++++++++++
 \subsection{Zeroth order basis}
@@ -140,13 +141,13 @@ b_1^0(t; \mathbf{t}) &= \begin{cases} 1 & \text{~if~} \tau_1 \leq t \leq \tau_2 
  									 0 & \text{~otherwise}
  			\end{cases}
 \end{align*}
-where $b_0^0(t)$ and $b_0^0(t)$ are shown in Figure~\ref{fig:spline_basis_0}.
+where $b_0^0(t)$ and $b_1^0(t)$ are shown in Figure~\ref{fig:spline_basis_0}.
 \begin{figure}[hbt]
   \centering\includegraphics[width=0.5\textwidth]{./figures/spline_basis_0}
   \caption{Zeroth order spline basis}
   \label{fig:spline_basis_0}  
 \end{figure}
-Additional zeroth order basis function can be defined by expanding the knot vector.
+Note that $b_1^0(t; \mathbf{t}) = b_0^0(t-1; \mathbf{t})$, or in other words, all zeroth order basis functions are shifted versions of the central zeroth order basis function $b_0^0(t; \mathbf{t})$.  Additional zeroth order basis function can be defined by expanding the knot vector to $\mathbf{t}=[0, \dots, M]$, where $b_m^0(t; \mathbf{t})= b_0^0(t-m; \mathbf{t})$ for $m\leq M$.
 
 \clearpage
 
@@ -346,32 +347,56 @@ The proof therefore follows by induction.
 
 
 %---------------------------------------------------------------
-\section{Clamped Uniform B-Splines}
+\section{Uniform B-Splines}
 
-In the previous section we saw that there is a relationship between the knot point vector $\mathbf{t}$ and the basis functions.  We say that the knot vector $\mathbf{t}$ is {\em clamped and uniform} if it has form
-\[
-\mathbf{t} = [\underbrace{\tau_0, \tau_0, \dots, \tau_0}_{k-\text{terms}}, \tau_0, \tau_0+\Delta, \tau_0+2\Delta, \dots, \tau_0+M\Delta, \underbrace{\tau_0+M\Delta, \dots, \tau_0+M\Delta}_{k-\text{terms}}],
-\]
+In the previous section we saw that there is a relationship between the knot point vector $\mathbf{t}$ and the basis functions.  We say that the knot vector $\mathbf{t}$ is {\em uniform} if the knot values are equally spaced, i.e., it has form
+\begin{multline*}
+\mathbf{t} = [\underbrace{\tau_0-k\Delta, \tau_0-(k-1)\Delta, \dots, \tau_0-\Delta,}_{k-terms} \\
+			 \underbrace{\tau_0, \tau_0+\Delta, \tau_0+2\Delta, \dots, \tau_0+M\Delta,}_{M+1-terms} \\
+			 \underbrace{\tau_0+(M+1)\Delta, \dots, \tau_0+(M+k)\Delta}_{k-terms}],	
+\end{multline*}
 where $\Delta>0$ and $M\geq k+1$.  
+For example, the following knot vectors are uniform:
+\begin{align*}
+	(t_0=0, k=2, \Delta=1, M=3):\quad & \mathbf{t} = [-2, -1, \vdots~ 0, 1, 2, 3, \vdots~ 4, 5] \\
+	(t_0=-3, k=3, \Delta=1, M=5):\quad & \mathbf{t} = [-6, -5, -4,\vdots~  -3, -2, -1, 0, 1, 2, \vdots~ 3, 4, 5] \\
+	(t_0=0, k=3, \Delta=\frac{1}{5}, M=5):\quad & \mathbf{t} = [-\frac{3}{5}, -\frac{2}{5}, -\frac{1}{5}, \vdots~  0, \frac{1}{5}, \frac{2}{5}, \frac{3}{5}, \frac{4}{5}, 1, \vdots~  \frac{6}{5}, \frac{7}{5}, \frac{8}{5}].	
+\end{align*}
+
+ We say that the knot vector $\bar{\mathbf{t}}$ is {\em uniform and clamped} (the overbar is used to denote clamped) if the knot values are equally spaced and the first and last $k$-terms are repeated, i.e., it has form
+\begin{multline*}
+\bar{\mathbf{t}} = [\underbrace{\tau_0, \tau_0, \dots, \tau_0,}_{k-terms} \\
+			 \underbrace{\tau_0, \tau_0+\Delta, \tau_0+2\Delta, \dots, \tau_0+M\Delta,}_{M+1-terms} \\
+			 \underbrace{\tau_0+M\Delta, \dots, \tau_0+M\Delta}_{k-terms}],	
+\end{multline*}
+where $\Delta>0$ and $M\geq k+1$.  
+
 For example, the following knot vectors are clamped and uniform:
 \begin{align*}
-	(t_0=0, k=2, \Delta=1, M=3):\quad & \mathbf{t} = [0, 0, 0, 1, 2, 3, 3, 3] \\
-	(t_0=-3, k=3, \Delta=1, M=5):\quad & \mathbf{t} = [-3, -3, -3, -3, -2, -1, 0, 1, 2, 2, 2, 2] \\
-	(t_0=0, k=3, \Delta=\frac{1}{5}, M=5):\quad & \mathbf{t} = [0, 0, 0, 0, \frac{1}{5}, \frac{2}{5}, \frac{3}{5}, \frac{4}{5}, 1, 1, 1, 1].	
+	(t_0=0, k=2, \Delta=1, M=3):\quad & \bar{\mathbf{t}} = [0, 0, \vdots~ 0, 1, 2, 3, \vdots~ 3, 3] \\
+	(t_0=-3, k=3, \Delta=1, M=5):\quad & \bar{\mathbf{t}} = [-3, -3, -3, \vdots~ -3, -2, -1, 0, 1, 2, \vdots~ 2, 2, 2] \\
+	(t_0=0, k=3, \Delta=\frac{1}{5}, M=5):\quad & \bar{\mathbf{t}} = [0, 0, 0, \vdots~ 0, \frac{1}{5}, \frac{2}{5}, \frac{3}{5}, \frac{4}{5}, 1, \vdots~ 1, 1, 1].	
 \end{align*}
 Similarly, the knot vectors shown in Figures~\ref{fig:spline_basis_0}, \ref{fig:spline_basis_1}, \ref{fig:spline_basis_2}, \ref{fig:spline_basis_3}, and~\ref{fig:spline_basis_8} are all clamped and uniform.  
 
-The length of a uniform and clamped knot vector is 
+The length of uniform, and uniform and clamped knot vectors is 
 \[
 \text{length}(\mathbf{t}) = M+1 + 2k,
 \]
-and there are $M$ evenly spaced time intervals between $t_0$ and $t_f=t_0+M\Delta$.  In the following, we will focus on the uniform clamped knot vector
-\begin{equation}\label{eq:knot_vector_t_M}
-	\mathbf{t}^k_M \defeq [\underbrace{0, 0, \dots, 0}_{k-\text{terms}}, 0, 1, 2, \dots, M, \underbrace{M, \dots, M}_{k-\text{terms}}], 
-\end{equation}
+and, in both cases, the time interval of interest is $t\in[t_0, t_0+M\Delta$, where there are $M$ evenly spaced time intervals. 
+
+B-splines associated with uniform knot vectors are called uniform b-splines, and they are only valid on the time interval $t\in[t_0, t_0+M\Delta]$, similarly B-splines associated with uniform and clamped knot vectors are called uniform and clamped b-splines, and they are also only valid on the time interval $t\in[t_0, t_0+M\Delta]$.
+
+In the rest of this tutorial, we will focus on the knot vectors
+\begin{align}
+	\mathbf{t}^k_M &\defeq [-k, -(k-1), \dots, -1, 0, 1, 2, \dots, M, M+1, \dots, M+k],
+		\notag \\ 
+	\bar{\mathbf{t}}^k_M &\defeq [\underbrace{0, 0, \dots, 0}_{k-\text{terms}}, 0, 1, 2, \dots, M, \underbrace{M, \dots, M}_{k-\text{terms}}], 
+	\label{eq:knot_vector_t_M}
+\end{align}
 and use Lemmas~\ref{lem:basis_are_shift_invariant} and~\ref{lem:bases_are_scale_invariant} to adapt the results to any desired time interval by shifting and scaling.
 
-There are several important properties of the B-spline basis functions for uniform clamped knot vectors, which we will lay out in the next several lemmas.
+There are several important properties of the B-spline basis functions for uniform and clamped knot vectors, which we will lay out in the next several lemmas.
 
 \begin{lemma} \label{lem:nonzero_basis_vectors}
 	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$.

@@ -13,25 +13,35 @@ def splineBasis(order, knots, controlPoints, time):
         basisPoints = spl(time)
         return( basisPoints )
 
-def plotSplineBasis(order):
+def uniformClampedKnots(order, M):
+        knots = [0] * order + list(range(0, M+1)) + [M] * order
+        return knots
+
+def uniformKnots(order, M):
+        knots = list(range(-order, M+order+1))
+        return knots
+
+def plotSplineBasis(order, M, clamped=True):
         fig = plt.figure(order)
-        if order > 0:
-                #N = order + 1
-                N = order + 1 + 1
+        t = np.linspace(0, M, 100)
+        if clamped:
+                knots = uniformClampedKnots(order, M)
         else:
-                N = 2
-        t = np.linspace(0, N, 100)
-        knots = [0] * order + list(range(0, N+1)) + [N] * order
+                knots = uniformKnots(order, M)
         fig.suptitle(f"Order={order}, knots = {str(knots)}")
-        ax = fig.subplots(N+order)
-        for i in range(0, N+order):
-                ctrl = [0] * (N+order)
+        ax = fig.subplots(M+order)
+        for i in range(0, M+order):
+                ctrl = [0] * (M+order)
                 ctrl[i] = 1
                 pts = splineBasis(order, knots, ctrl, t)
                 ax[i].plot(t, pts)
                 ax[i].set(ylabel=f"m={i}")
- 
-plotSplineBasis(1)
+
+plotSplineBasis(order=0, M=2)
+#plotSplineBasis(order=1, M=2, clamped=True)
+plotSplineBasis(order=1, M=2, clamped=False)
+#plotSplineBasis(order=2, M=3, clamped=True)
+plotSplineBasis(order=2, M=3, clamped=False)
 plt.show()
 
 
