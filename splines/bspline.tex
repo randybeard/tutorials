@@ -390,13 +390,46 @@ B-splines associated with uniform knot vectors are called uniform b-splines, and
 In the rest of this tutorial, we will focus on the knot vectors
 \begin{align}
 	\mathbf{t}^k_M &\defeq [-k, -(k-1), \dots, -1, 0, 1, 2, \dots, M, M+1, \dots, M+k],
-		\notag \\ 
+		\label{eq:knot_vector_t_M} \\ 
 	\bar{\mathbf{t}}^k_M &\defeq [\underbrace{0, 0, \dots, 0}_{k-\text{terms}}, 0, 1, 2, \dots, M, \underbrace{M, \dots, M}_{k-\text{terms}}], 
-	\label{eq:knot_vector_t_M}
+	\label{eq:knot_vector_tbar_M}
 \end{align}
 and use Lemmas~\ref{lem:basis_are_shift_invariant} and~\ref{lem:bases_are_scale_invariant} to adapt the results to any desired time interval by shifting and scaling.
 
 There are several important properties of the B-spline basis functions for uniform and clamped knot vectors, which we will lay out in the next several lemmas.
+
+\begin{lemma} \label{lem:shifted_central_basis}
+Let $\mathbf{t}_M^k$ be the uniform knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$, then the basis function $b_k^k(t; \mathbf{t}_M^k)$ plays a central role in the sense that
+\[
+	b_{k+m}^k(t; \mathbf{t}_M^k) = b_k^k(t-m; \mathbf{t}_M^k), \qquad m=-k, \dots, M-1.
+\]
+\end{lemma}
+\begin{proof}
+From Equation~\eqref{eq:spline_basis_definition_0} we give that
+\begin{align*}
+	b_m^0(t; \mathbf{t}_M^k) &= \begin{cases} 1 & \text{~if~} m \leq t \leq m+1 \\ 
+ 									 		  0 & \text{~otherwise} 
+ 					   			\end{cases} 
+ 					   		\\
+ 					   		 &= \begin{cases} 1 & \text{~if~} 0 \leq t-m \leq 1 \\ 
+ 									 		  0 & \text{~otherwise} 
+ 					   			\end{cases} 
+ 					   		\\
+ 					   		&= b_0^0(t-m; \mathbf{t}_M^k).
+\end{align*}
+Suppose that $b_{k+m-1}^{k-1}(t; \mathbf{t}_M^k) = b_{k-1}^{k-1}(t-m; \mathbf{t}_M^k)$, then
+\begin{align*}
+b_{k+m}^{k}(t; \mathbf{t}_M^k) 
+	&= \frac{t-(k+m)}{m+2k-(m+k)} b_{m+k}^{k-1}(t; \mathbf{t}_M^k) + \frac{m+2k+1-t}{m+2k+1-(m+k+1)} b_{m+k+1}^{k-1}(t; \mathbf{t}_M^k),
+	\\	
+	&= \frac{(t-m)-k)}{k} b_{k}^{k-1}(t-m; \mathbf{t}_M^k) + \frac{2k+1-(t-m)}{k} b_{k+1}^{k-1}(t-m; \mathbf{t}_M^k),
+	\\
+	&= b_k^k(t-m; \mathbf{t}_M^k).
+\end{align*}
+Therefore, the lemma holds by induction.
+\end{proof}
+
+
 
 \begin{lemma} \label{lem:nonzero_basis_vectors}
 	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$.
@@ -425,7 +458,7 @@ A graphical depiction of the region of support for the set of basis functions $\
 \begin{lemma} \label{lem:basis_vectors_sum_to_1}
 	Let $\mathbf{t}_M^k$ be a uniform clamped knot vector defined in Equation~\eqref{eq:knot_vector_t_M} with $M\geq k+1$. For any instant of time $t\in[0,M]$, the basis vectors at that time sum to unity, i.e., for $t\in[0, M]$,
 	\[
-	\sum_{m=0}^{M+k-1} b(t; \mathbf{t}_M^k) = 1.
+	\sum_{m=0}^{M+k-1} b_m^k(t; \mathbf{t}_M^k) = 1.
 	\]
 \end{lemma}
 \begin{proof}  The proof again follows from a careful, but straight-forward accounting using Equations~\eqref{eq:spline_basis_definition_0} and~\eqref{eq:spline_basis_definition_k}.	
