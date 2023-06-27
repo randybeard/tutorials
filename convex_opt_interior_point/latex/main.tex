@@ -85,9 +85,8 @@
 \newcommand{\rwbcomment}[1]{{\color{blue}RWB: #1}}
 
 
-\title{\LARGE \bf
-Convex Optimization and Interior Point Methods
-}
+\title{{\Large \bf How to Write Your Own Convex Optimizer}\\
+(and other useful ideas)}
 \date{Updated: \today}
 
 \author{Randal~W.~Beard \\ Brigham Young University}
@@ -97,6 +96,7 @@ Convex Optimization and Interior Point Methods
 \maketitle
 
 \begin{abstract}
+
 Overview of convex optimization, and how to solve them with interior point methods.  
 \end{abstract}
 
@@ -130,7 +130,9 @@ Overview of convex optimization, and how to solve them with interior point metho
 	where $\alpha$ is the step size.	
 
 	Before moving to the multivariable case, lets consider the potential problems with this approach.		
-	{\color{blue}Problem 1: Local Minima.}
+	
+	
+	\par\noindent{\color{blue}Problem 1: Local Minima.}
 	If $f$ looks like this:
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]
@@ -146,18 +148,14 @@ Overview of convex optimization, and how to solve them with interior point metho
 	$x^{++}$ while others will give $x^\ast$, the true minimum.
 	
 	
-	This is a fundamental problem with \underline{any} method that relies on derivative information.  There are no completely satisfactory solutions to the problem.  However there are many ad-hoc fixes.	
-
-	
-	\begin{example}
+	This is a fundamental problem with \underline{any} method that relies on derivative information.  There are no completely satisfactory solutions to the problem.  However there are many ad-hoc fixes:
 		\begin{itemize}
 		\item Execute from numerous ``random'' initial conditions and pick the lowest solution.
 		\item Occassionally introduce random jumps in $x$.
 		\item etc...
 		\end{itemize}
-	\end{example}
 
-	{\color{blue}Problem 2: Step Size.}
+\par\noindent{\color{blue}Problem 2: Step Size.}
 	The selection of $\alpha$ can have a major effect on the convergence of the sequence
 	\[ 
 		x^{[k+1]} = x^{[k]} - \alpha \frac{\partial f}{\partial x}(x^{[k]}) 
@@ -238,28 +236,26 @@ Overview of convex optimization, and how to solve them with interior point metho
 	\]
 	
 	Again, the selection of the step size is very important.  If $\alpha_k$ is too small convergence will be slow.
+	%
+	If $\alpha_k$ is too large, the algorithm could be unstable.	
 	
-	
-	If $\alpha_k$ is too large, algorithm could be unstable.	
-	
-	
-	How to pick the right $\alpha$?
+\subsection{How do we pick the right $\alpha$?}
 	
 	Locally around a min or max, every smooth function can be approximated by a quadratic (Taylor series).  
-	
-	
+%		
 	We can gain insight about the selection of $\alpha$ by studying quadratic functions.
-	
-	
-	Let $f(x) = x^TRx - 2b^Tx$ where $x \in \mathbb{R}^m,b\in\mathbb{R}^m,R=R^T>0$.	
-	
-	
+	Let 
+	\[
+	f(x) = x^TRx - 2b^Tx
+	\]
+	where $x \in \mathbb{R}^m,b\in\mathbb{R}^m,R=R^T>0$.	
+	%
 	Taking the gradient we get
 	\[ 
 		\frac{\partial f}{\partial x} = 2Rx - 2b.
 	\]
-
-	So the gradient descent algorithm is
+%
+	Therefore the gradient descent algorithm is
 	\[ 
 		x^{[k+1]} = x^{[k]} - 2\alpha(Rx^{[k]} - b). 
 	\]
@@ -274,7 +270,7 @@ Overview of convex optimization, and how to solve them with interior point metho
 			&= (I - \mu R)y^{[k]}\\
 		\implies y^{[k]} &= (I - \mu R)^ky^{[0]}.
 	\end{align*}	
-
+%
 	Since $R$ is symmetric positive definite
 	\[ 
 		R = Q\Lambda Q^T 
@@ -293,7 +289,7 @@ Overview of convex optimization, and how to solve them with interior point metho
 		z^{[k]}_i = (1 - \mu \lambda_i)^kz_i^{[0]}
 	\end{align}
 	which converges if $\abs{1-\mu\lambda_i} < 1$, $i = 1, \ldots, m$.	
-
+%
 	Therefore, convergence happens when
 	\begin{align*}
 	-1 &< 1 - \mu \lambda_i < 1 \\
@@ -301,12 +297,14 @@ Overview of convex optimization, and how to solve them with interior point metho
 	\iff 0 &< \mu\lambda_i < 2\\
 	\iff 0 &< \mu < \frac{2}{\lambda_i} 
 	\end{align*}
-	Recall that $\lambda_i > 0$ when $R$ is positive definite, 
-	so if
+	Recall that $\lambda_i > 0$ when $R$ is positive definite.
+	\begin{theorem}
+	If $f(x) = x^TRx - 2b^Tx$, and if
 	\[ 
 		0 < \alpha < \frac{1}{\lambda_{\max}(R)} 
 	\]
-	then steepest descent converges for quadratic functions.
+	then steepest gradient descent converges.
+	\end{theorem}
 
 	Note that the convergence along each eigenaxis is determined by 
 	\(
@@ -454,7 +452,7 @@ Can we pose this as a gradient descent problem?
 		Let $\Omega \subseteq \mathbb{R}^n$ be the feasible region.  
 		Then $x^{\ast}\in \Omega$ is a \underline{local minimum} of $f:\mathbb{R}^n\to\mathbb{R}$ over $\Omega$ if $\exists \epsilon > 0$ such that 
 		\[
-			x \in \Omega \cap \{y\in \mathbb{R}^n:|u-x^{\ast}|<\epsilon\} \quad \implies \quad f(x) \geq f(x^{\ast}).
+			x \in \Omega \cap \{y\in \mathbb{R}^n:\|y-x^{\ast}\|<\epsilon\} \quad \implies \quad f(x) \geq f(x^{\ast}).
 		\]
 		If $f(x) > f(x^{\ast})$ then $x^{\ast}$ is a \underline{strict local minimum}.  
 		If true for all $\epsilon > 0$ then $x^{\ast}$ is a global minimum.
@@ -677,7 +675,7 @@ Can we pose this as a gradient descent problem?
 
 	Several geometric insights help:
 	
-	{\color{blue}Insight  \#1} 
+\par\noindent{\color{blue}Insight  \#1} 
 	\begin{itemize}
 		\item Geometrically what do the constraints $\hbf(x) = 0$ look like?
 		\item What if $\hbf$ is linear, i.e. $\hbf(x) = Hx = 0$ where $H:\mathbb{R}^n\to\mathbb{R}^m$.
@@ -690,14 +688,14 @@ Can we pose this as a gradient descent problem?
 			{figures/chap18_hypersurface}
 	\end{center}
 	
-	{\color{blue}Insight  \#2}
+\par\noindent{\color{blue}Insight  \#2}
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]
 			{figures/chap18_gradient_on_constraint}
 	\end{center}
 	
 	At a constrained minimum the gradient is orthogonal to the hypersurface.
-
+%
 	To formalize, we need some definitions.
 	
 	Let $\mathbb{S}$ be a hyper-surface of dimension $n-m$.  Let $x$ be a curve on $\mathbb{S}$ continuously parameterized by $\xi \in [a,b]$, i.e. $x(\xi) \in \mathbb{S}$.
@@ -714,9 +712,7 @@ Can we pose this as a gradient descent problem?
 
 	\begin{definition}
 		The \underline{tangent plane} to a surface $\mathbb{S}$ at $x \in \mathbb{S}$ is the span of the derivatives of all the differentiable curves on $\mathbb{S}$ at $x$.
-	\end{definition}
-	
-	\vfill
+	\end{definition}   
 
 	The problem with this definition is that it is not constructive, i.e. it doesn't give us a good way to actually construct the tangent plane.
 	
@@ -930,11 +926,9 @@ Can we pose this as a gradient descent problem?
 
 	So $p_i$ must be constant for all $i$.  The constant $\sum p_i = 1 \Rightarrow p_i = \frac{1}{n} \geq 0$, so $p_i$ satisfies the inequality constraint.
 	
-	\vfill
 	
 	In other words: the uniform pmf maximizes entropy.
 	
-	\vfill
 	
 	In other words: all possibilities are equally likely.	
 
@@ -1376,7 +1370,7 @@ Can we pose this as a gradient descent problem?
 	Lets try various combinations of active constraints:
 	
 			\textcolor{blue}{Case I  (Both inactive) 
-			i.e. $\mu_1 = \mu_2 \ 0$}
+			i.e. $\mu_1 = \mu_2 = 0$}
 			
 			Therefore, must solve
 			\begin{align*}
@@ -1445,7 +1439,8 @@ Can we pose this as a gradient descent problem?
 		\mu_1 \geq 0, \mu_2 \geq 0
 	\end{align*}	
 	Try various combinations of active constraints
-	\textcolor{blue}{Case 1: (Both inactive) }
+	\begin{itemize}
+	\item\textcolor{blue}{Case 1: (Both inactive) }
 	\begin{align*}
 		2x_1 &= 0\\
 		2x_2 &= 0
@@ -1460,7 +1455,7 @@ Can we pose this as a gradient descent problem?
 		g_2(x^{\ast}) = 1 \geq 0.
 	\end{align*}
 
-	\textcolor{blue}{Case 2: $g_1$-active, $g_2$-inactive}
+	\item \textcolor{blue}{Case 2: $g_1$-active, $g_2$-inactive}
 	\begin{align*}
 		2x_1 + \mu_1 &= 0 \quad\implies x_1 = -\frac{1}{2}\mu_1 \\
 		2x_2 + \mu_1 &= 0 \quad\implies x_2 = -\frac{1}{2}\mu_1\\
@@ -1486,12 +1481,10 @@ Can we pose this as a gradient descent problem?
 		g_1(x^{\ast}) &= -\frac{1}{2} -\frac{1}{2} + 1 = 0 \leq 0 \qquad \text{ ok }\\
 		g_2(x^{\ast}) &= \frac{1}{2} -\frac{1}{2} + 1 = 1 \geq 0 \qquad \text{ no }
 	\end{align*}	
-	\textcolor{blue}{Case 3: $g_1$-inactive, $g_2$-active}
+	\item \textcolor{blue}{Case 3: $g_1$-inactive, $g_2$-active}
 	 Similar results to Case 2.
 	 
-	 \vfill
-
-	\textcolor{blue}{Case 4: Both active}
+	\item \textcolor{blue}{Case 4: Both active}
 	\begin{align*}
 		& \mu_1(\frac{1}{2}\mu_2 - \frac{1}{2}\mu_1 - \frac{1}{2}\mu_2-\frac{1}{2}\mu_1 + 1) \\
 		& \quad 
@@ -1516,11 +1509,7 @@ Can we pose this as a gradient descent problem?
 	      		0 \\ -1
 	    	\end{pmatrix}
 	\]
-	
-	
 	Constraints can be verified to be satisfied.
-	
-	
 	
 	Sufficient condition:
 	\[ 
@@ -1543,12 +1532,14 @@ Can we pose this as a gradient descent problem?
 	  		\end{pmatrix} > 0
 	\]
 	Therefore $x^{\ast}$ is a local minimum.	
+	\end{itemize}
 
 %---------------------------------------------------------------
 \section{Convex Functions}
 
 A set $X$ is said to be convex if for $x_1\in X$ and $x_2\in X$, the line connecting $x_1$ and $x_2$, i.e., $\sigma x_1 + (1-\sigma)x_2\in X$ for $\sigma\in[0, 1]$ is also in $X$.  Figure~\ref{fig:convex_set} shows an example of a convex and non-convex set.
 \begin{figure}[hbt]
+  \centering
   \includegraphics[width=0.9\textwidth]{figures/convex_set}
   \caption{(a) Convex set.  (b) Nonconvex set.}
   \label{fig:convex_set}
@@ -1560,7 +1551,8 @@ f(\sigma x_1 + (1-\sigma)x_2) \leq \sigma f(x_1) + (1-\sigma)f(x_2).
 \]
 Note that $\sigma x_1 + (1-\sigma)x_2$ for $\sigma\in[0, 1]$ is the line connecting $x_1$ and $x_2$ in $X$, and that $\sigma f(x_1) + (1-\sigma)f(x_2)$ is the line connecting $f(x_1)$ and $f(x_2)$ in $\mathbb{R}$.  If $X=\mathbb{R}$, then $f$ is convex if the chord between $f(x_1)$ and $f(x_2)$ is greater than the function between $f(x_1)$ and $f(x_2)$ as shown in Figure~\ref{fig:convex_function}.
 \begin{figure}[hbt]
-  \includegraphics[width=0.9\textwidth]{figures/convex_function}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/convex_function}
   \caption{Convex function}
   \label{fig:convex_function}
 \end{figure}
@@ -1587,7 +1579,7 @@ is convex.
 Any local minimum of a convex function is also a global minimum.	
 \end{theorem}
 
-The following properties are also on Wikipedia (https://en.wikipedia.org/wiki/Convex\_function).
+The following properties are also on Wikipedia~\url{https://en.wikipedia.org/wiki/Convex_function}.
 \begin{theorem}
 The following operations preserve convexity:
 \begin{itemize}
@@ -1596,7 +1588,9 @@ The following operations preserve convexity:
 	\item Elementwise maximum: let $\{f_i\}_{i\in\mathcal{I}}$ be a collection of convex functions. Then $g(x) = \sup_{y\in\mathcal{I}}f_i(x)$ is convex.   The domain of $g(x)$ is the collection of points where the expression is finite. Important special cases:
 		\begin{itemize}
 			\item If $f_{1},\ldots ,f_{n}$ are convex functions then so is 
-				$g(x)=\max \left\{ f_{1}(x), \ldots, f_{n}(x) \right\}$.
+				\[ 
+				g(x)=\max \left\{ f_{1}(x), \ldots, f_{n}(x) \right\}.
+				\]
 			\item Danskin's theorem: If $f(x,y)$ is convex in $x$ then $g(x)=\sup \nolimits _{y\in C}f(x,y)$ is convex in $x$ even if $C$ is not a convex set.
 		\end{itemize}
 	\item Composition: 
@@ -1606,7 +1600,13 @@ The following operations preserve convexity:
 			\item Convexity is invariant under affine maps: that is, if $f$ is convex with domain $D_{f}\subseteq \mathbb{R}^{m}$, then so is $g(x)=f(Ax+b)$, where $A\in \mathbb{R}^{m\times n}, b\in \mathbb{R}^{m}$ with domain $D_{g}\subseteq \mathbb{R}^{n}$.
 		\end{itemize}
 	\item Minimization: If $f(x,y)$ is convex in $(x,y)$ then $g(x)=\inf \nolimits _{y\in C}f(x,y)$ is convex in $x$, provided that $C$ is a convex set and that $g(x)\neq -\infty$.
-	\item If $f$ is convex, then its perspective $g(x,t)=tf\left({\tfrac {x}{t}}\right)$ with domain $\left\{(x,t):{\tfrac {x}{t}}\in \operatorname {Dom} (f),t>0\right\}$ is convex.
+	\item If $f$ is convex, then its perspective 
+		\(
+		g(x,t)=tf\left({\tfrac {x}{t}}\right)
+		\) with domain 
+		\[
+		\left\{(x,t):{\tfrac {x}{t}}\in \operatorname {Dom} (f),t>0\right\}
+		\]  is convex.
 	\item Let $X$ be a vector space. $f:X\to \mathbb{R}$ is convex and satisfies $f(0)\leq 0$ if and only if $f(ax+by)\leq af(x)+bf(y)$ for any $x, y \in X$ and any non-negative real numbers $a,b$ that satisfy $a+b\leq 1$.	
  	
 \end{itemize}
@@ -1647,8 +1647,8 @@ It is well known that $x_k\to x^\ast$ quadratically if $x_0\in B_{\epsilon}(x^\a
 
 Alternatively, Newton's method can be written in two steps:
 \begin{align*}
-\text{\bf Step 1,~solve for $\mathbf{p}$:~} &\qquad	\left(\nabla_x J(x_{k-1})\right) \mathbf{p} = J(x_{k-1}) \\
-\text{\bf Step 2, update $x$:~} &\qquad x_k = x_{k-1} - \mathbf{p},
+&\text{\bf Step 1,~solve for feasible direction $\mathbf{p}$:~} \qquad	\left(\nabla_x J(x_{k-1})\right) \mathbf{p} = J(x_{k-1}) \\
+&\text{\bf Step 2, update $x$ along feasible direction:~} \qquad x_k = x_{k-1} - \mathbf{p},
 \end{align*}
 where the equation
 \[
@@ -1667,7 +1667,7 @@ R\mathbf{p} = Q^\top J(x_{k-1}).
 %---------------------------------------------------------------
 \section{Interior Point Methods}
 
-The discussion in this section is adapted from \url{https://en.wikipedia.org/wiki/Interior-point\_method}.
+The discussion in this section is adapted from \url{https://en.wikipedia.org/wiki/Interior-point_method}.
 
 Consider the inequality constrained optimization problem
 			\begin{mini*}|s|
@@ -1686,12 +1686,11 @@ Consider the inequality constrained optimization problem
 					 \end{pmatrix}
 			\]
 			i.e., element-wise,
-			 
 	and assume that $f:\mathbb{R}^n\to\mathbb{R}$ is a convex function, and that the constraint region
 	\[
-		\Omega = \{x\in\mathbb{R}^n | g_i(x) \geq 0\}
+		\Omega = \bigcap_{i=1}^q \{x\in\mathbb{R}^n | g_i(x) \geq 0\}
 	\]
-	is convex, and suppose that there is an initial guess in the interior of $\Omega$, i.e., $x_0\in\Omega$. Since $\Omega$ is convex, straight-lines starting at $x_0$ will remain in $\Omega$ for at least a short segment.  The idea is to construct barrier functions that keep the next guess inside $\Omega$.  The convexity of $f$ and $\Omega$ ensures that gradient descent {\bf inside} $\Omega$ will find a global solution.
+	is convex, and suppose that there is an initial guess in the interior of $\Omega$, i.e., $x_0\in\Omega$. Since $\Omega$ is convex, if $x_0$ is interior to $\Omega$, then every direction is a feasible direction, and a small enough step will remain in $\Omega$.  The idea is to construct barrier functions that keep the next guess inside $\Omega$.  The convexity of $f$ and $\Omega$ ensures that gradient descent {\bf inside} $\Omega$ will find a global solution.
 	
 	Construct the logarithmic barrier function
 	\[
@@ -1704,7 +1703,7 @@ Consider the inequality constrained optimization problem
 		\begin{mini*}|s|
 				{x\in\Omega}{B(x,\mu)}{}{}
 		\end{mini*}
-	using Gradient descent, and then to decrease $\mu\to 0$ until convergence happens either inside $\Omega$ or to a point in the boundary $\partial\Omega$.
+	using standard methods, 	and then to decrease $\mu\to 0$ until convergence happens either inside $\Omega$ or to a point in the boundary $\partial\Omega$.
 	
 	
 	Taking the gradient with respect to $x$ gives
@@ -1728,7 +1727,7 @@ Consider the inequality constrained optimization problem
 	\begin{align*}
 	& \nabla H \mathbf{p} = H \\
 	\implies & \begin{bmatrix}
-					\nabla_x\left(\nabla_x f(x_\mu) - \nabla_x \mathbf{g}(x_\mu) \boldsymbol{\lambda}_\mu\right) & \nabla_x \mathbf{g}(x_\mu) \\
+					\nabla_x^2 f(x_\mu) - \sum_{i=1}^q \nabla_x^2 g_i(x_\mu) \lambda_i & -\nabla_x \mathbf{g}(x_\mu) \\
 					-\nabla_x\left(\text{diag}(\mathbf{g}(x_\mu))\boldsymbol{\lambda}_{\mu}\right) & -\text{diag}(\mathbf{g}(x_\mu))
                \end{bmatrix}
                \begin{pmatrix} \mathbf{p}_x \\ \mathbf{p}_\lambda \end{pmatrix}	
