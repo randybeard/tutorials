@@ -1545,36 +1545,213 @@ Can we pose this as a gradient descent problem?
 	Therefore $x^{\ast}$ is a local minimum.	
 
 %---------------------------------------------------------------
+\section{Convex Functions}
+
+A set $X$ is said to be convex if for $x_1\in X$ and $x_2\in X$, the line connecting $x_1$ and $x_2$, i.e., $\sigma x_1 + (1-\sigma)x_2\in X$ for $\sigma\in[0, 1]$ is also in $X$.  Figure~\ref{fig:convex_set} shows an example of a convex and non-convex set.
+\begin{figure}[hbt]
+  \includegraphics[width=0.9\textwidth]{figures/convex_set}
+  \caption{(a) Convex set.  (b) Nonconvex set.}
+  \label{fig:convex_set}
+\end{figure}
+
+The function $f:X\to \mathbb{R}$ is said to be convex if for every $x_1, x_2\in X$, and for every $\sigma\in[0, 1]$ we have
+\[
+f(\sigma x_1 + (1-\sigma)x_2) \leq \sigma f(x_1) + (1-\sigma)f(x_2).
+\]
+Note that $\sigma x_1 + (1-\sigma)x_2$ for $\sigma\in[0, 1]$ is the line connecting $x_1$ and $x_2$ in $X$, and that $\sigma f(x_1) + (1-\sigma)f(x_2)$ is the line connecting $f(x_1)$ and $f(x_2)$ in $\mathbb{R}$.  If $X=\mathbb{R}$, then $f$ is convex if the chord between $f(x_1)$ and $f(x_2)$ is greater than the function between $f(x_1)$ and $f(x_2)$ as shown in Figure~\ref{fig:convex_function}.
+\begin{figure}[hbt]
+  \includegraphics[width=0.9\textwidth]{figures/convex_function}
+  \caption{Convex function}
+  \label{fig:convex_function}
+\end{figure}
+
+The following properties are listed on Wikipedia (https://en.wikipedia.org/wiki/Convex\_function).
+\begin{theorem}
+The continuously differentiable function $f:\mathbb{R}^n \to \mathbb{R}^m$ is convex on $\Omega$ if and only if
+\[
+f(x_1) \geq f(x_2) + \nabla_x f(x_2) (x_1-x_2)
+\]
+for all $x_1, x_2\in\Omega\subseteq\mathbb{R}^n$.
+\end{theorem}
+\begin{theorem}
+A twice differentiable function of several variables is convex on a convex set if and only if its Hessian matrix of second partial derivatives is positive semidefinite on the interior of the convex set.	
+\end{theorem}
+\begin{theorem}
+The set of global minimisers of a convex function $f$, is a convex set, i.e.,
+\[
+\Omega = \{x: x=\arg\min f(\xi)\}
+\]
+is convex.
+\end{theorem}
+\begin{theorem}
+Any local minimum of a convex function is also a global minimum.	
+\end{theorem}
+
+The following properties are also on Wikipedia (https://en.wikipedia.org/wiki/Convex\_function).
+\begin{theorem}
+The following operations preserve convexity:
+\begin{itemize}
+	\item If $r$ is any real number then $r+f$ is convex if and only if $f$ is convex.
+	\item Nonnegative weighted sums: If $w_1, \dots, w_n\geq 0$ and $f_1, \dots f_n$ are all convex, then $w_1f_1 + \dots w_n f_n$ is convex. This property extends to infinite sums, integrals and expected values as well (provided that they exist).
+	\item Elementwise maximum: let $\{f_i\}_{i\in\mathcal{I}}$ be a collection of convex functions. Then $g(x) = \sup_{y\in\mathcal{I}}f_i(x)$ is convex.   The domain of $g(x)$ is the collection of points where the expression is finite. Important special cases:
+		\begin{itemize}
+			\item If $f_{1},\ldots ,f_{n}$ are convex functions then so is 
+				$g(x)=\max \left\{ f_{1}(x), \ldots, f_{n}(x) \right\}$.
+			\item Danskin's theorem: If $f(x,y)$ is convex in $x$ then $g(x)=\sup \nolimits _{y\in C}f(x,y)$ is convex in $x$ even if $C$ is not a convex set.
+		\end{itemize}
+	\item Composition: 
+		\begin{itemize} 
+			\item If $f$  and $g$ are convex functions and $g$ is non-decreasing over a univariate domain, then $h(x)=g(f(x))$ is convex. For example, if $f$ is convex, then so is $e^{f(x)}$ because $e^{x}$ is convex and monotonically increasing.
+			\item If $f$ is concave and $g$ is convex and non-increasing over a univariate domain, then $h(x)=g(f(x))$ is convex.
+			\item Convexity is invariant under affine maps: that is, if $f$ is convex with domain $D_{f}\subseteq \mathbb{R}^{m}$, then so is $g(x)=f(Ax+b)$, where $A\in \mathbb{R}^{m\times n}, b\in \mathbb{R}^{m}$ with domain $D_{g}\subseteq \mathbb{R}^{n}$.
+		\end{itemize}
+	\item Minimization: If $f(x,y)$ is convex in $(x,y)$ then $g(x)=\inf \nolimits _{y\in C}f(x,y)$ is convex in $x$, provided that $C$ is a convex set and that $g(x)\neq -\infty$.
+	\item If $f$ is convex, then its perspective $g(x,t)=tf\left({\tfrac {x}{t}}\right)$ with domain $\left\{(x,t):{\tfrac {x}{t}}\in \operatorname {Dom} (f),t>0\right\}$ is convex.
+	\item Let $X$ be a vector space. $f:X\to \mathbb{R}$ is convex and satisfies $f(0)\leq 0$ if and only if $f(ax+by)\leq af(x)+bf(y)$ for any $x, y \in X$ and any non-negative real numbers $a,b$ that satisfy $a+b\leq 1$.	
+ 	
+\end{itemize}
+
+\end{theorem}
+
+%---------------------------------------------------------------
 \section{Newton's Method}
 
-Given a function $f:\mathbb{R}^n\mapsto\mathbb{R}^n$, Newton's method can be used to find the zero of the function that is close to an initial starting point.  In other words, the objective is to find $x^\ast$ close to $x_0$ where $f(x^\ast)=0$.
-The basic idea behind Newton's method is shown in Figure~\ref{fig:newtons_method} for $n=1$.
+Given a function $J:\mathbb{R}^m\mapsto\mathbb{R}^n$, Newton's method can be used to find the zero of the function that is close to an initial starting point.  In other words, the objective is to find $x^\ast$ close to $x_0$ where $f(x^\ast)=0$.
+The basic idea behind Newton's method is shown in Figure~\ref{fig:newtons_method} for $m=n=1$.
 \begin{figure}[hbt]
-  \includegraphics[width=0.9\textwidth]{figures/newtons_method.pdf}
+  \includegraphics[width=0.9\textwidth]{figures/newtons_method}
   \caption{Newton's method}
   \label{fig:newtons_method}
 \end{figure}
-If $\frac{\partial f}{\partial x}\Big|_{\hat{x}}$ is the Jacobian of $f$ with respect to $x$ evaluated at $\hat{x}$, then the linear approximation to $f$ at $x_0$ is given by
+If $\nabla_x J(\hat{x})$ is the Jacobian of $J$ with respect to $x$ evaluated at $\hat{x}$, then the linear approximation to $J$ at $x_0$ is given by
 \[
-y = f(x_0) + \left(\frac{\partial f}{\partial x}\right)\Big|_{x_0} (x-x_0).
+y = J(x_0) + \left(\nabla_x J(x_0)\right) (x-x_0).
 \]
 As shown in Figure~\ref{fig:newtons_method}, if we let $x_1$ be the location where the linear approximation is zero, then
 \[
-x_1 = x_0 - \left(\frac{\partial f}{\partial x}\Big|_{x_0}\right)^{-1} f(x_0).
+x_1 = x_0 - \left(\nabla_x J(x_0)\right)^{-1} J(x_0).
 \]
 This process can then be iterated to find the zero of the function using the iteration
 \[
-x_k = x_{k-1} - \left(\frac{\partial f}{\partial x}\Big|_{x_{k-1}}\right)^{-1} f(x_{k-1}).
+x_k = x_{k-1} - \left(\nabla_x J(x_{k-1})\right)^{-1} J(x_{k-1}).
 \]
 It is well known that $x_k\to x^\ast$ quadratically if $x_0\in B_{\epsilon}(x^\ast)$ implies that
 \begin{itemize}
-\item 	$\frac{\partial f}{\partial x}$ is non-zero on $B_{\epsilon}(x^\ast)$, 
-\item $\frac{\partial^2 f}{\partial x^2}$ is continuous on $B_{\epsilon}(x^\ast)$,
+\item 	$\nabla_x J(x)$ is non-zero on $B_{\epsilon}(x^\ast)$, 
+\item $\nabla_x^2 J(x)$ is continuous on $B_{\epsilon}(x^\ast)$,
 \item $\frac{\sup_{\hat{x}\in B_{\epsilon}(x^\ast)}
-       \norm{\frac{\partial^2 f}{\partial x^2}\Big|_{\hat{x}}}}
-       {\inf_{\hat{x}\in B_{\epsilon}(x^\ast)}\norm{\frac{\partial f}{\partial x}\Big|_{\hat{x}}}} < \frac{2}{\epsilon}
+       \norm{\nabla_x^2 J(\hat{x})}}
+       {\inf_{\hat{x}\in B_{\epsilon}(x^\ast)}\norm{\nabla_x(J(\hat{x})}} < \frac{2}{\epsilon}
        $
 \end{itemize}
+
+Alternatively, Newton's method can be written in two steps:
+\begin{align*}
+\text{\bf Step 1,~solve for $\mathbf{p}$:~} &\qquad	\left(\nabla_x J(x_{k-1})\right) \mathbf{p} = J(x_{k-1}) \\
+\text{\bf Step 2, update $x$:~} &\qquad x_k = x_{k-1} - \mathbf{p},
+\end{align*}
+where the equation
+\[
+\left(\nabla_x J(x_{k-1})\right) \mathbf{p} = J(x_{k-1})
+\]
+can be solved efficiently by computing the QR decomposition of $\nabla_x J(x_{k-1})$:
+\[
+QR = \nabla_x J(x_{k-1})
+\]
+where $Q$ is unitary and $R$ is upper triangular.  The vector $\mathbf{p}$ can be found by back-substitution of the equation
+\[
+R\mathbf{p} = Q^\top J(x_{k-1}).
+\]
+
+
+%---------------------------------------------------------------
+\section{Interior Point Methods}
+
+The discussion in this section is adapted from \url{https://en.wikipedia.org/wiki/Interior-point\_method}.
+
+Consider the inequality constrained optimization problem
+			\begin{mini*}|s|
+				{}{f(x)}{}{}
+				\addConstraint{\gbf(x) \geq 0}
+			\end{mini*}
+			where $\gbf(x) \geq 0$ means that
+			\[
+				\begin{pmatrix}
+			    	g_1(x)\\
+			    	\vdots\\
+			    	g_q(x)
+			  	\end{pmatrix} 
+			  	\geq \begin{pmatrix} 
+		 				0 \\ \vdots \\ 0
+					 \end{pmatrix}
+			\]
+			i.e., element-wise,
+			 
+	and assume that $f:\mathbb{R}^n\to\mathbb{R}$ is a convex function, and that the constraint region
+	\[
+		\Omega = \{x\in\mathbb{R}^n | g_i(x) \geq 0\}
+	\]
+	is convex, and suppose that there is an initial guess in the interior of $\Omega$, i.e., $x_0\in\Omega$. Since $\Omega$ is convex, straight-lines starting at $x_0$ will remain in $\Omega$ for at least a short segment.  The idea is to construct barrier functions that keep the next guess inside $\Omega$.  The convexity of $f$ and $\Omega$ ensures that gradient descent {\bf inside} $\Omega$ will find a global solution.
+	
+	Construct the logarithmic barrier function
+	\[
+	B(x, \mu) \triangleq f(x) - \mu\sum_{i=1}^q \log(g_i(x)).
+	\]
+	Note that close to the boundary where $0<g_i(x)=\epsilon$ that as $\epsilon\to 0$, that $B(x,\mu)\to\infty$, with the cost being infinite on the boundary for any $\mu\neq 0$. 
+	Also note that as $\mu\to 0$, that $B(x,\mu)\to f(x)$ except on the boundary $\partial\Omega$, where $B(x,\mu)=\infty$.  
+	
+	The idea is therefore to solve the unconstrained optimization problem 
+		\begin{mini*}|s|
+				{x\in\Omega}{B(x,\mu)}{}{}
+		\end{mini*}
+	using Gradient descent, and then to decrease $\mu\to 0$ until convergence happens either inside $\Omega$ or to a point in the boundary $\partial\Omega$.
+	
+	
+	Taking the gradient with respect to $x$ gives
+	\[
+	\nabla_x B(x, \mu) = \nabla_x f(x) - \mu\sum_{i=1}^q \frac{\nabla_x g_i(x)}{g_i(x)}.
+	\]	
+	Introduce the Lagrange multipliers (actually, the dependence on $x$, means that they are not true Lagrange multipliers)
+	\[
+	\lambda_i(x) \triangleq \frac{\mu}{g_i(x)}
+	\]
+	then for a fixed $\mu$, the necessary conditions become
+	\begin{align*}
+	H(x_\mu, \boldsymbol{\lambda}_{\mu}) \triangleq 
+		\begin{bmatrix}
+ 			\nabla_x f(x_\mu) - \nabla_x \mathbf{g}(x_\mu) \boldsymbol{\lambda}_\mu \\
+ 			\mu I - \text{diag}(\mathbf{g}(x_\mu))\boldsymbol{\lambda}_{\mu}
+ 		\end{bmatrix} = 0.
+	\end{align*}
+	
+	Using Newton's method to find the zeros, we first compute the update 
+	\begin{align*}
+	& \nabla H \mathbf{p} = H \\
+	\implies & \begin{bmatrix}
+					\nabla_x\left(\nabla_x f(x_\mu) - \nabla_x \mathbf{g}(x_\mu) \boldsymbol{\lambda}_\mu\right) & \nabla_x \mathbf{g}(x_\mu) \\
+					-\nabla_x\left(\text{diag}(\mathbf{g}(x_\mu))\boldsymbol{\lambda}_{\mu}\right) & -\text{diag}(\mathbf{g}(x_\mu))
+               \end{bmatrix}
+               \begin{pmatrix} \mathbf{p}_x \\ \mathbf{p}_\lambda \end{pmatrix}	
+               = \begin{bmatrix}
+ 					\nabla_x f(x_\mu) - \nabla_x \mathbf{g}(x_\mu) \boldsymbol{\lambda}_\mu \\
+ 					\mu I - \text{diag}(\mathbf{g}(x_\mu))\boldsymbol{\lambda}_{\mu}
+ 				\end{bmatrix}
+	\end{align*}
+	using QR factorization, and then update $(x_\mu, \lambda_\mu)$ as
+\[
+	\begin{pmatrix} x_{\mu, k} \\ \boldsymbol{\lambda}_{\mu, k} \end{pmatrix} 
+	= \begin{pmatrix} x_{\mu, k-1} \\ \boldsymbol{\lambda}_{\mu, k-1} \end{pmatrix} - \alpha \begin{pmatrix} \mathbf{p}_x \\ \mathbf{p}_{\lambda} \end{pmatrix}
+\]
+where $\alpha$ is nominally equal to 1, but may be decreased to ensure that each $\lambda_i\geq 0$.
+
+This process is carried to convergence.  The parameter $\mu$ is then decreased and the process is repeated using the converged values as the initial conditions for the problem with a new $\mu$.  This process is continued until $x_\mu$ and $\boldsymbol{\lambda}_{\mu}$ converges for iterations in $\mu$.
+	
+	
+	
+
+	
+
+
 
 
 
